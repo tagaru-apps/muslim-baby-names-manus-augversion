@@ -5,16 +5,35 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import BrowsePage from "./pages/BrowsePage";
+import NameDetailPage from "./pages/NameDetailPage";
+import FavoritesPage from "./pages/FavoritesPage";
+import InfoPage from "./pages/InfoPage";
+import { SiteShell } from "./components/SiteShell";
 
 
 function Router() {
   return (
-    <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
-      <Route component={NotFound} />
-    </Switch>
+    <SiteShell>
+      <Switch>
+        <Route path={"/"} component={Home} />
+        <Route path={"/boy-names"}>{() => <BrowsePage forcedGender="boy" />}</Route>
+        <Route path={"/boy-names/:letter"}>{() => <BrowsePage forcedGender="boy" />}</Route>
+        <Route path={"/girl-names"}>{() => <BrowsePage forcedGender="girl" />}</Route>
+        <Route path={"/girl-names/:letter"}>{() => <BrowsePage forcedGender="girl" />}</Route>
+        <Route path={"/name/:slug"} component={NameDetailPage} />
+        <Route path={"/meaning/:meaning"}>{() => <BrowsePage mode="meaning" />}</Route>
+        <Route path={"/origin/:origin"}>{() => <BrowsePage mode="origin" />}</Route>
+        <Route path={"/quranic-names"}>{() => <BrowsePage mode="quranic" />}</Route>
+        <Route path={"/unique-muslim-names"}>{() => <BrowsePage mode="unique" />}</Route>
+        <Route path={"/search"}>{() => <BrowsePage mode="search" />}</Route>
+        <Route path={"/favorites"} component={FavoritesPage} />
+        <Route path={"/about"} component={InfoPage} />
+        <Route path={"/sources"} component={InfoPage} />
+        <Route path={"/404"} component={NotFound} />
+        <Route component={NotFound} />
+      </Switch>
+    </SiteShell>
   );
 }
 
