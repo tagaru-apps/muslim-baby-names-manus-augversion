@@ -23,6 +23,7 @@ export default function BrowsePage({ forcedGender, mode }: BrowseProps) {
   const [uniqueOnly, setUniqueOnly] = useState(mode === "unique");
   const [sort, setSort] = useState("popularity");
   const [mobileFilters, setMobileFilters] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(48);
   const { favorites, toggleFavorite } = useFavorites();
 
   const filtered = useMemo(() => names.filter((record) => {
@@ -35,11 +36,12 @@ export default function BrowsePage({ forcedGender, mode }: BrowseProps) {
       (mode !== "quranic" || record.isQuranic) &&
       (!search || haystack.includes(search.toLowerCase()));
   }).sort((a, b) => sort === "alphabetical" ? a.name.localeCompare(b.name) : b.popularity - a.popularity), [gender, letter, mode, origin, search, sort, tag, uniqueOnly]);
+  const visibleNames = filtered.slice(0, visibleCount);
 
   const heading = mode === "quranic" ? "Quranic Muslim names" : mode === "unique" ? "Unique Muslim names" : mode === "origin" ? `${routeParameter} Muslim names` : mode === "meaning" ? `Muslim names meaning ${routeParameter}` : forcedGender ? `${forcedGender === "boy" ? "Muslim boy" : "Muslim girl"} names${routeLetter ? ` starting with ${routeLetter}` : ""}` : mode === "search" ? "Search Muslim baby names" : "Explore Muslim names";
   const description = mode === "quranic" ? "Explore names mentioned in or deeply connected to the Quran, with clear meanings and pronunciation support." : mode === "unique" ? "Distinctive choices with depth, made for families hoping to find something less expected without losing meaning." : mode === "origin" ? `Browse names in our ${routeParameter} collection, selected for their meaningful heritage and accessible pronunciation.` : mode === "meaning" ? `A focused collection of names connected with ${routeParameter}, helping you discover the feeling behind a name.` : forcedGender ? `Browse meaningful ${forcedGender} names by first letter, origin, or the quality you hope a name will carry.` : "Search through meanings, origin, and sound to find the name that feels like your family’s beginning.";
 
-  const resetFilters = () => { setSearch(""); setGender(forcedGender || "all"); setOrigin(mode === "origin" ? routeParameter : "all"); setTag(mode === "meaning" ? routeParameter : "all"); setLetter(routeLetter || "all"); setUniqueOnly(mode === "unique"); };
+  const resetFilters = () => { setSearch(""); setGender(forcedGender || "all"); setOrigin(mode === "origin" ? routeParameter : "all"); setTag(mode === "meaning" ? routeParameter : "all"); setLetter(routeLetter || "all"); setUniqueOnly(mode === "unique"); setVisibleCount(48); };
   const filters = <div className="space-y-7">
     <div><p className="filter-label">Gender</p><div className="grid grid-cols-3 gap-1.5">{["all", "boy", "girl"].map((value) => <button key={value} onClick={() => setGender(value)} className={`filter-button ${gender === value ? "selected" : ""}`}>{value === "all" ? "All" : `${value[0].toUpperCase()}${value.slice(1)}`}</button>)}</div></div>
     <div><p className="filter-label">First letter</p><div className="grid grid-cols-7 gap-1">{["all", ...alphabet].map((value) => <button key={value} onClick={() => setLetter(value)} className={`letter-button ${letter === value ? "selected" : ""}`}>{value === "all" ? "All" : value}</button>)}</div></div>
@@ -59,8 +61,8 @@ export default function BrowsePage({ forcedGender, mode }: BrowseProps) {
       <div className="grid gap-10 lg:grid-cols-[245px_minmax(0,1fr)]">
         <aside className="hidden border-r border-emerald-950/10 pr-7 lg:block">{filters}</aside>
         <section>
-          <div className="mb-6 flex items-center justify-between"><p className="text-sm text-emerald-950/60"><span className="font-semibold text-emerald-950">{filtered.length}</span> names to explore</p><p className="hidden text-xs uppercase tracking-[0.16em] text-emerald-950/45 sm:block">Meaning before trend</p></div>
-          {filtered.length ? <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{filtered.map((record) => <NameCard key={record.slug} record={record} isFavorite={favorites.includes(record.slug)} onToggle={toggleFavorite} />)}</div> : <div className="border border-dashed border-emerald-950/20 bg-[#f0ece1] px-6 py-16 text-center"><p className="font-display text-2xl text-emerald-950">No names match just yet.</p><p className="mx-auto mt-2 max-w-md text-sm leading-6 text-emerald-950/60">Try lifting a filter or exploring a different meaning. There are many paths into the collection.</p><button onClick={resetFilters} className="mt-5 text-sm font-semibold text-[#0b6e4f] underline underline-offset-4">Clear filters</button></div>}
+          <div className="mb-6 flex items-center justify-between"><p className="text-sm text-emerald-950/60"><span className="font-semibold text-emerald-950">{filtered.length.toLocaleString()}</span> names to explore</p><p className="hidden text-xs uppercase tracking-[0.16em] text-emerald-950/45 sm:block">Meaning before trend</p></div>
+          {filtered.length ? <><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{visibleNames.map((record) => <NameCard key={record.slug} record={record} isFavorite={favorites.includes(record.slug)} onToggle={toggleFavorite} />)}</div>{visibleCount < filtered.length && <div className="mt-8 text-center"><button onClick={() => setVisibleCount((count) => count + 48)} className="border border-[#0b6e4f] bg-[#fffdf8] px-5 py-3 text-sm font-semibold text-[#0b6e4f] transition hover:bg-[#0b6e4f] hover:text-[#faf7f0]">Show 48 more names <span className="ml-2 text-[#a57f1f]">({filtered.length - visibleCount} remaining)</span></button></div>}</> : <div className="border border-dashed border-emerald-950/20 bg-[#f0ece1] px-6 py-16 text-center"><p className="font-display text-2xl text-emerald-950">No names match just yet.</p><p className="mx-auto mt-2 max-w-md text-sm leading-6 text-emerald-950/60">Try lifting a filter or exploring a different meaning. There are many paths into the collection.</p><button onClick={resetFilters} className="mt-5 text-sm font-semibold text-[#0b6e4f] underline underline-offset-4">Clear filters</button></div>}
         </section>
       </div>
     </main>
