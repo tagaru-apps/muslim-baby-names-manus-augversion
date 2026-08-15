@@ -34,6 +34,8 @@ const previewRecords = names.map((record) => ({
   phonetic: record.phonetic,
   meaning: record.meaning,
   origin: record.origin,
+  gender: record.gender,
+  isQuranic: Boolean(record.isQuranic),
 }));
 write(path.join(root, "dist", "name-preview-records.json"), JSON.stringify(previewRecords));
 

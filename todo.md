@@ -39,3 +39,14 @@
 - [x] Design and sample-test a tailored 1200×630 social card composition.
 - [x] Generate individual social-preview images and Open Graph/Twitter metadata for all names.
 - [x] Validate image and metadata output for representative individual-name pages.
+
+## Enhanced Social Sharing
+
+- [x] Inspect the current preview renderer and detail-page sharing controls.
+- [x] Design boy, girl, and Quranic preview-card treatments within the Quiet Courtyard system.
+- [x] Add preview-image download and copy-link actions with success feedback.
+- [x] Validate representative category previews and the updated detail-page action layout.
+
+### Validation Notes
+
+The production-rendered boy sample uses the deep-teal geometric treatment and the girl sample uses the berry-toned floral treatment; both retained the name, Arabic script, phonetic guide, meaning, and origin line legibly at 1200×630. The Quranic sample used the distinct indigo-and-gold celestial treatment, and its footer was refined to avoid a duplicate Quranic label. The name-detail header was also checked with the Save, Share, Image, and Copy link actions in a single responsive row.
