@@ -50,3 +50,11 @@
 ### Validation Notes
 
 The production-rendered boy sample uses the deep-teal geometric treatment and the girl sample uses the berry-toned floral treatment; both retained the name, Arabic script, phonetic guide, meaning, and origin line legibly at 1200×630. The Quranic sample used the distinct indigo-and-gold celestial treatment, and its footer was refined to avoid a duplicate Quranic label. The name-detail header was also checked with the Save, Share, Image, and Copy link actions in a single responsive row.
+
+## Square Previews & Shortlist Sharing
+
+- [x] Inspect the existing social-preview renderer, favorites state, and detail-page share controls.
+- [x] Design the 1080×1080 Instagram card and combined-shortlist visual treatment.
+- [x] Add square preview rendering, Instagram download, and local share-count state.
+- [x] Add combined shortlist image export using saved names from local storage.
+- [x] Validate the output image dimensions, share count, and shortlist export flow.

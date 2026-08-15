@@ -1,18 +1,21 @@
 /** Quiet Courtyard profile: a spacious, source-minded name page that returns every detail to discovery. */
 import { Link, useLocation } from "wouter";
-import { ArrowLeft, Bookmark, ChevronRight, Download, Heart, Languages, Link2, Share2, Volume2 } from "lucide-react";
+/** Quiet Courtyard: archival emerald, gold linework, and considered utility actions over a low-key geometric field. */
+import { ArrowLeft, Bookmark, ChevronRight, Download, Heart, Instagram, Languages, Link2, Share2, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getName, getRelatedNames } from "@/lib/names";
 import { useFavorites } from "@/hooks/useFavorites";
 import { NameCard } from "@/components/NameCard";
 import NotFound from "@/pages/NotFound";
+import { useShareCount } from "@/hooks/useShareCount";
 
 export default function NameDetailPage() {
   const [location] = useLocation();
   const slug = location.split("/").filter(Boolean).pop() || "";
   const record = getName(slug);
   const { favorites, toggleFavorite } = useFavorites();
+  const { shareCount, recordShare } = useShareCount(slug);
   const [speechSupported, setSpeechSupported] = useState(false);
   const [activeVoice, setActiveVoice] = useState<"arabic" | "english" | null>(null);
   const [shareStatus, setShareStatus] = useState<"idle" | "shared" | "copied">("idle");
@@ -26,6 +29,7 @@ export default function NameDetailPage() {
   const sourceIndexed = record.origin === "Not specified in source";
   const hasArabicScript = /[\u0600-\u06FF]/.test(record.arabic);
   const previewImageUrl = `/og/name/${encodeURIComponent(record.slug)}.png`;
+  const instagramImageUrl = `/og/name/${encodeURIComponent(record.slug)}/instagram.png`;
   const shareMessage = `${record.name}${record.phonetic ? ` (${record.phonetic})` : ""} — ${record.meaning}. Discover this name on Muslim Baby Names.`;
   const copyText = async (text: string) => {
     if (navigator.clipboard?.writeText) {
@@ -47,6 +51,7 @@ export default function NameDetailPage() {
     if (navigator.share) {
       try {
         await navigator.share({ title: `${record.name} — Muslim Baby Names`, text: shareMessage, url });
+        recordShare();
         setShareStatus("shared");
         window.setTimeout(() => setShareStatus("idle"), 2400);
         return;
@@ -56,6 +61,7 @@ export default function NameDetailPage() {
     }
     try {
       await copyText(`${shareMessage}${url ? ` ${url}` : ""}`);
+      recordShare();
       setShareStatus("copied");
       toast.success("Share text copied", { description: "Ready to paste into WhatsApp or social apps." });
       window.setTimeout(() => setShareStatus("idle"), 2400);
@@ -66,6 +72,7 @@ export default function NameDetailPage() {
   const copyLink = async () => {
     try {
       await copyText(window.location.href);
+      recordShare();
       toast.success("Link copied", { description: "Ready to paste into WhatsApp or social apps." });
     } catch {
       toast.error("Could not copy the link", { description: "Please copy the address from your browser." });
@@ -90,7 +97,7 @@ export default function NameDetailPage() {
         <nav className="mb-10 flex items-center gap-1.5 text-xs text-[#faf7f0]/55" aria-label="Breadcrumb"><Link href="/" className="hover:text-white">Home</Link><ChevronRight className="h-3.5 w-3.5" /><Link href={record.gender === "girl" ? "/girl-names" : "/boy-names"} className="hover:text-white">{record.gender === "girl" ? "Girl names" : "Boy names"}</Link><ChevronRight className="h-3.5 w-3.5" /><span>{record.name}</span></nav>
         <div className="grid items-end gap-10 lg:grid-cols-[1fr_auto]">
           <div><p className="eyebrow text-[#d9be70]">{sourceIndexed ? "Source-indexed" : record.origin} {record.gender === "unisex" ? "unisex" : record.gender} name</p><h1 className="mt-4 font-display text-6xl font-semibold tracking-[-0.07em] sm:text-7xl lg:text-8xl">{record.name}</h1><p className="mt-3 font-arabic text-4xl text-[#d9be70]" lang="ar" dir="rtl">{record.arabic}</p><p className="mt-7 max-w-xl font-display text-2xl leading-tight text-[#faf7f0]/90 sm:text-3xl">“{record.meaning}”</p></div>
-          <div className="flex flex-wrap gap-3 lg:justify-end"><button onClick={() => toggleFavorite(record.slug)} className={`inline-flex items-center gap-2 border px-4 py-3 text-sm font-semibold transition ${isFavorite ? "border-[#c9a227] bg-[#c9a227] text-emerald-950" : "border-white/30 bg-white/10 text-white hover:bg-white/15"}`}><Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} /> {isFavorite ? "Saved to shortlist" : "Save name"}</button><button onClick={shareName} className={`inline-flex h-11 items-center gap-2 border px-3 text-sm font-semibold transition ${shareStatus !== "idle" ? "border-[#c9a227] bg-[#c9a227] text-emerald-950" : "border-white/30 bg-white/10 text-white hover:bg-white/15"}`} aria-label="Share this name and pronunciation" title="Share name and pronunciation"><Share2 className="h-4 w-4" /><span className="hidden sm:inline">{shareStatus === "shared" ? "Shared" : shareStatus === "copied" ? "Copied" : "Share"}</span></button><a href={previewImageUrl} download={`${record.slug}-muslim-baby-name.png`} className="inline-flex h-11 items-center gap-2 border border-white/30 bg-white/10 px-3 text-sm font-semibold text-white transition hover:bg-white/15" aria-label="Download social preview image" title="Download social preview image"><Download className="h-4 w-4" /><span className="hidden sm:inline">Image</span></a><button onClick={copyLink} className="inline-flex h-11 items-center gap-2 border border-white/30 bg-white/10 px-3 text-sm font-semibold text-white transition hover:bg-white/15" aria-label="Copy page link" title="Copy page link"><Link2 className="h-4 w-4" /><span className="hidden sm:inline">Copy link</span></button></div>
+          <div className="flex flex-wrap gap-3 lg:justify-end"><button onClick={() => toggleFavorite(record.slug)} className={`inline-flex items-center gap-2 border px-4 py-3 text-sm font-semibold transition ${isFavorite ? "border-[#c9a227] bg-[#c9a227] text-emerald-950" : "border-white/30 bg-white/10 text-white hover:bg-white/15"}`}><Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} /> {isFavorite ? "Saved to shortlist" : "Save name"}</button><button onClick={shareName} className={`inline-flex h-11 items-center gap-2 border px-3 text-sm font-semibold transition ${shareStatus !== "idle" ? "border-[#c9a227] bg-[#c9a227] text-emerald-950" : "border-white/30 bg-white/10 text-white hover:bg-white/15"}`} aria-label="Share this name and pronunciation" title="Share name and pronunciation"><Share2 className="h-4 w-4" /><span className="hidden sm:inline">{shareStatus === "shared" ? "Shared" : shareStatus === "copied" ? "Copied" : "Share"}</span></button><a href={previewImageUrl} download={`${record.slug}-muslim-baby-name.png`} className="inline-flex h-11 items-center gap-2 border border-white/30 bg-white/10 px-3 text-sm font-semibold text-white transition hover:bg-white/15" aria-label="Download landscape social preview image" title="Download landscape social preview"><Download className="h-4 w-4" /><span className="hidden sm:inline">Image</span></a><a href={instagramImageUrl} download={`${record.slug}-instagram.png`} className="inline-flex h-11 items-center gap-2 border border-[#d9be70]/70 bg-[#d9be70]/12 px-3 text-sm font-semibold text-[#fff8e9] transition hover:bg-[#d9be70] hover:text-emerald-950" aria-label="Download square Instagram image" title="Download 1080 by 1080 Instagram image"><Instagram className="h-4 w-4" /><span className="hidden sm:inline">Instagram</span></a><button onClick={copyLink} className="inline-flex h-11 items-center gap-2 border border-white/30 bg-white/10 px-3 text-sm font-semibold text-white transition hover:bg-white/15" aria-label="Copy page link" title="Copy page link"><Link2 className="h-4 w-4" /><span className="hidden sm:inline">Copy link</span></button><p className="basis-full text-right text-xs text-white/55" aria-live="polite">Shared {shareCount} {shareCount === 1 ? "time" : "times"} on this device</p></div>
         </div>
       </div>
     </section>
