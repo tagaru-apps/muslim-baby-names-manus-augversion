@@ -8,3 +8,13 @@
 - [x] Generate SEO sitemap assets for all catalogue pages and individual-name URLs.
 - [x] Validate sample routes, build output, mobile presentation, and data counts.
 - [ ] Save a final project checkpoint and deliver the expanded catalogue.
+
+## Pronunciation Feature
+
+- [x] Inspect the current normalisation, static-page, and name-detail pronunciation flow.
+- [x] Define deterministic respelling and confidence rules using the source transliteration and Arabic-script availability.
+- [x] Test phonetic output on a representative sample of approximately 20 names.
+- [x] Add generated `phonetic` and `phoneticConfidence` fields to the normalisation output.
+- [x] Add guarded Arabic and English browser-speech controls to individual name pages.
+- [x] Include phonetic respellings and pronunciation metadata in generated static SEO pages.
+- [x] Regenerate the full catalogue, validate representative routes, and report confidence counts.

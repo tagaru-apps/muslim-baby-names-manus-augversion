@@ -5,6 +5,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { generatePhonetic } from "./phonetics.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -64,7 +65,8 @@ const preliminary = [...deduplicated.values()]
     const letter = /^[A-Z]$/i.test(record.name[0]) ? record.name[0].toUpperCase() : "#";
     const meaningTags = tagRules.filter(([, matcher]) => matcher.test(record.meaning)).map(([tag]) => tag);
     const isQuranic = /\bquran(?:ic)?\b/i.test(record.meaning);
-    return { ...record, slug, letter, meaningTags: meaningTags.length ? meaningTags : ["meaning"], isQuranic };
+    const pronunciation = generatePhonetic(record.name, record.arabic, isQuranic);
+    return { ...record, slug, letter, meaningTags: meaningTags.length ? meaningTags : ["meaning"], isQuranic, ...pronunciation };
   })
   .sort((a, b) => a.name.localeCompare(b.name, "en"));
 
@@ -88,18 +90,24 @@ const names = preliminary.map((record) => {
     meaning: record.meaning,
     meaningTags: record.meaningTags,
     origin: "Not specified in source",
-    pronunciation: "Not supplied by source",
+    phonetic: record.phonetic,
+    phoneticConfidence: record.phoneticConfidence,
     letter: record.letter,
     popularity: 0,
     isUnique: false,
     isQuranic: record.isQuranic,
-    description: `${record.name} is listed in the CC0 Muslim Names Dataset as a ${datasetGender} name. The source records its meaning as “${record.meaning}”. The imported record does not include a verified pronunciation, origin taxonomy, or editorial historical context.`,
+    description: `${record.name} is listed in the CC0 Muslim Names Dataset as a ${datasetGender} name. The source records its meaning as “${record.meaning}”. Its reader-friendly phonetic spelling is generated deterministically from the published transliteration and should be reviewed for names with complex or region-specific pronunciation. The imported record does not include an origin taxonomy or editorial historical context.`,
     related,
     source: "Muslim Names Dataset (CC0 1.0)",
   };
 });
 
 const availableTags = [...new Set(names.flatMap((record) => record.meaningTags))].sort();
+const phoneticCounts = names.reduce((counts, record) => {
+  const key = record.phonetic ? record.phoneticConfidence : "omitted";
+  counts[key] = (counts[key] || 0) + 1;
+  return counts;
+}, {});
 const generated = `/**
  * GENERATED FILE — do not edit manually.
  * Source: Takiuddin Ahmed, Muslim Names Dataset (CC0 1.0).
@@ -115,7 +123,8 @@ export type NameRecord = {
   meaning: string;
   meaningTags: string[];
   origin: string;
-  pronunciation: string;
+  phonetic: string | null;
+  phoneticConfidence: "high" | "auto";
   letter: string;
   popularity: number;
   isUnique?: boolean;
@@ -135,3 +144,4 @@ export function getRelatedNames(record: NameRecord) { return record.related.map(
 
 fs.writeFileSync(outputPath, generated, "utf8");
 console.log(`Normalised ${names.length.toLocaleString()} unique name records from ${source.length.toLocaleString()} source rows.`);
+console.log(`Phonetic confidence — high: ${(phoneticCounts.high || 0).toLocaleString()}, auto: ${(phoneticCounts.auto || 0).toLocaleString()}, omitted: ${(phoneticCounts.omitted || 0).toLocaleString()}.`);

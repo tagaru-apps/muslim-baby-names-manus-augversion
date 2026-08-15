@@ -162,3 +162,6 @@
 .filter-button:hover, .letter-button:hover { border-color: #0b6e4f; background: #0b6e4f; color: #faf7f0; }
 .select-field { border-bottom-color: #c9a227; }
 .shortlist-empty::before { position: absolute; top: 18px; right: 18px; left: 18px; height: 1px; background: #c9a227; content: ""; opacity: 0.62; }
+.pronunciation-play { display: inline-flex; height: 2rem; min-width: 2rem; align-items: center; justify-content: center; gap: 0.15rem; border: 1px solid rgba(11,110,79,0.25); background: #f0ece1; color: #0b6e4f; transition: transform 160ms cubic-bezier(0.23,1,0.32,1), background-color 160ms cubic-bezier(0.23,1,0.32,1), color 160ms cubic-bezier(0.23,1,0.32,1); }
+.pronunciation-play:hover, .pronunciation-play.is-speaking { background: #0b6e4f; color: #faf7f0; }
+.pronunciation-play:active { transform: scale(0.97); }
