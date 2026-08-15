@@ -79,3 +79,11 @@ The production-rendered boy sample uses the deep-teal geometric treatment and th
 - [x] Identify browser compatibility and deployment-route causes of the failure.
 - [x] Implement robust native sharing, image download, and fallback behaviour.
 - [x] Validate the repaired actions against a running production build.
+
+## Social Card Preview & Story Sharing
+
+- [x] Inspect current social-image generation and name-page action controls.
+- [x] Design a 1080×1920 Story card and export preview modal.
+- [x] Add phonetic visibility state to generated social card formats.
+- [x] Add Story share/download and preview-modal export flows.
+- [x] Validate all social-card dimensions, preview states, and export actions.
