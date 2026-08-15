@@ -95,3 +95,10 @@ The production-rendered boy sample uses the deep-teal geometric treatment and th
 - [x] Add personal dedication controls to card preview and exports.
 - [x] Persist a concise device-local export history and display it on the shortlist page.
 - [x] Validate Story rendering, dedication inclusion, and recent-export carousel behaviour.
+
+## Production Asset Remediation
+
+- [x] Audit all `/manus-storage/` asset references and unresolved analytics placeholders.
+- [x] Preserve each visual asset on a deployment-safe hosted URL and replace proxy references.
+- [x] Remove the unresolved analytics script from the document head.
+- [x] Build the production bundle and verify no dev-only asset or analytics references remain.

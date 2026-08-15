@@ -2,6 +2,7 @@
 import { Link, useLocation } from "wouter";
 import { Heart, Menu, Search, X } from "lucide-react";
 import { useState } from "react";
+import { siteAssets } from "@/lib/siteAssets";
 
 const navItems = [
   { label: "Boy names", href: "/boy-names" },
@@ -19,7 +20,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-50 border-b border-emerald-950/10 bg-[#faf7f0]/92 backdrop-blur-xl">
         <div className="mx-auto flex max-w-[1440px] items-center justify-between px-5 py-3.5 sm:px-8 lg:px-12">
           <Link href="/" className="group flex items-center gap-3" aria-label="Muslim Baby Names home">
-            <span className="brand-mark"><img src="/manus-storage/courtyard-mark_c04bb830.png" alt="Eight-point star aperture logo" className="h-10 w-10 object-contain transition-transform duration-200 group-hover:rotate-6" /></span>
+            <span className="brand-mark"><img src={siteAssets.mark} alt="Eight-point star aperture logo" className="h-10 w-10 object-contain transition-transform duration-200 group-hover:rotate-6" /></span>
             <span className="brand-wordmark font-display text-[1.2rem] font-semibold tracking-[-0.055em] text-emerald-950">Muslim <em className="font-normal text-[#a57f1f]">Baby</em> Names</span>
           </Link>
           <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary navigation">
@@ -54,7 +55,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <footer className="border-t border-emerald-950/10 bg-[#f0ece1]">
         <div className="mx-auto grid max-w-[1440px] gap-10 px-5 py-12 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr] lg:px-12">
           <div>
-            <div className="mb-4 flex items-center gap-2"><img src="/manus-storage/courtyard-mark_c04bb830.png" alt="" className="h-7 w-7" /><span className="font-display text-lg font-semibold text-emerald-950">Muslim Baby Names</span></div>
+            <div className="mb-4 flex items-center gap-2"><img src={siteAssets.mark} alt="" className="h-7 w-7" /><span className="font-display text-lg font-semibold text-emerald-950">Muslim Baby Names</span></div>
             <p className="max-w-sm text-sm leading-6 text-emerald-950/65">A considered collection of names, meanings, and stories for families beginning something beautiful.</p>
           </div>
           <div><p className="eyebrow mb-3">Explore</p><div className="grid gap-2 text-sm text-emerald-950/75"><Link href="/boy-names">Boy names</Link><Link href="/girl-names">Girl names</Link><Link href="/meaning/light">Names meaning light</Link><Link href="/origin/arabic">Arabic names</Link></div></div>
