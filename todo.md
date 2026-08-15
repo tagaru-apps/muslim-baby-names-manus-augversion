@@ -135,3 +135,9 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 - [x] Inspect the expected muslim_names_source.json field schema.
 - [x] Create a configurable Python CSV-to-JSON converter with row validation and duplicate handling.
 - [x] Test it on a representative sample and document the command and supported columns.
+
+## Origin-Aware CSV Import
+
+- [x] Inspect the converter and generated catalogue origin expectations.
+- [x] Add origin column mapping and validation to the converter and example CSV.
+- [x] Update import guidance with the approved origin taxonomy and test the revised template.

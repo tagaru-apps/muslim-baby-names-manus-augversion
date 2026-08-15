@@ -11,7 +11,8 @@ Every output record follows this structure:
   "english_name": "Layla",
   "arabic_name": "ليلى",
   "meaning": "Night beauty",
-  "gender": "female"
+  "gender": "female",
+  "origin": "Arabic"
 }
 ```
 
@@ -23,8 +24,11 @@ The script accepts common CSV header aliases automatically.
 | `arabic_name` | `Arabic`, `Arabic Name`, `Arabic Spelling`, `name_ar` |
 | `meaning` | `Meaning`, `Meanings`, `Definition`, `Description` |
 | `gender` | `Gender`, `Sex`, `Type`, `Name Gender` |
+| `origin` | `Origin`, `Heritage`, `Linguistic Origin`, `Cultural Origin` |
 
 Gender values are normalised as follows: `M`, `Male`, and `Boy` become `male`; `F`, `Female`, and `Girl` become `female`; and `U`, `Unisex`, `Neutral`, and `Both` become `unisex`.
+
+The `origin` value must use one of the website’s approved collection labels: **African, Arabic, Hindi, Indonesian, Kurdish, Persian, Quranic, Somali, Turkish,** or **Urdu**. The converter preserves this value as a **source-stated** origin instead of relying on automatic inference.
 
 ## Recommended workflow
 

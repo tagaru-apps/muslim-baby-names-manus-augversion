@@ -44,6 +44,7 @@ const clean = source
     arabic: String(record.arabic_name || "").replace(/\s+/g, " ").trim(),
     meaning: String(record.meaning || "").replace(/\s+/g, " ").trim(),
     gender: normaliseGender(record.gender),
+    origin: String(record.origin || "").replace(/\s+/g, " ").trim(),
   }))
   .filter((record) => record.name && record.meaning);
 
@@ -65,9 +66,10 @@ const preliminary = [...deduplicated.values()]
     const slug = baseSlugCounts.get(baseSlug) > 1 ? `${baseSlug}-${record.gender}` : baseSlug;
     const letter = /^[A-Z]$/i.test(record.name[0]) ? record.name[0].toUpperCase() : "#";
     const meaningTags = tagRules.filter(([, matcher]) => matcher.test(record.meaning)).map(([tag]) => tag);
-    const isQuranic = /\bquran(?:ic)?\b/i.test(record.meaning);
+    const isQuranic = record.origin.toLowerCase() === "quranic" || /\bquran(?:ic)?\b/i.test(record.meaning);
     const pronunciation = generatePhonetic(record.name, record.arabic, isQuranic);
-    const origin = classifyOrigin({ name: record.name, meaning: record.meaning, arabic: record.arabic, isQuranic });
+    const inferredOrigin = classifyOrigin({ name: record.name, meaning: record.meaning, arabic: record.arabic, isQuranic });
+    const origin = record.origin ? { origin: record.origin, originConfidence: "explicit" } : inferredOrigin;
     const normalizedName = record.name.toLowerCase().replace(/[^a-z]/g, "");
     const regionalLineage = origin.originConfidence === "explicit" && !["Arabic", "Quranic"].includes(origin.origin);
     const uncommonPattern = /(?:q|x|z|kh|gh|sh|aa|ee|ii|oo|uu)/.test(normalizedName);
