@@ -127,3 +127,11 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 - [x] Inspect the unique-name card structure and its existing transition treatment.
 - [x] Add a subtle hover motion and editorial accent for unique collection cards.
 - [x] Validate hover feedback and reduced-motion behaviour.
+
+## CSV Name Import Utility
+
+- [ ] Inspect the expected muslim_names_source.json field schema.
+- [ ] Create a configurable Python CSV-to-JSON converter with row validation and duplicate handling.
+- [x] Inspect the expected muslim_names_source.json field schema.
+- [x] Create a configurable Python CSV-to-JSON converter with row validation and duplicate handling.
+- [x] Test it on a representative sample and document the command and supported columns.
