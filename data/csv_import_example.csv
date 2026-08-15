@@ -1,5 +1,5 @@
-english_name,arabic_name,meaning,gender,origin
-Layla,ليلى,Night beauty,female,Arabic
-Zayd,زيد,Abundance and growth,male,Arabic
-Noor,نور,Light,unisex,Quranic
-Layla,ليلى,Night beauty,female,Arabic
+english_name,arabic_name,meaning,gender,origin,source_url
+Layla,ليلى,Night beauty,female,Arabic,https://example.org/layla
+Zayd,زيد,Abundance and growth,male,Arabic,https://example.org/zayd
+Noor,نور,Light,unisex,Quranic,https://example.org/noor
+Layla,ليلى,Night beauty,female,Arabic,https://example.org/layla

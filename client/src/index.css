@@ -172,6 +172,14 @@
 .export-style-dot.warm { background: linear-gradient(135deg, #74482f, #aa6e45); }
 .export-style-dot.dark { background: linear-gradient(135deg, #101a20, #273842); }
 .export-style-dot.minimal { background: linear-gradient(135deg, #f6f0e4, #0b6e4f); }
+/* Quiet Courtyard browse: gold-selected origin tiles and paper archival slips keep the discovery interface architectural rather than utilitarian. */
+.courtyard-origin-rail { margin-bottom: 1.75rem; border-bottom: 1px solid rgb(20 61 48 / 0.1); padding-bottom: 1.75rem; }
+.origin-filter-row { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 0.35rem; border: 1px solid rgb(20 61 48 / 0.13); border-left: 2px solid transparent; background: rgb(255 253 248 / 0.78); padding: 0.48rem 0.5rem; color: rgb(20 61 48 / 0.72); font-size: 0.72rem; font-weight: 700; text-align: left; transition: background-color 160ms cubic-bezier(0.23,1,0.32,1), border-color 160ms cubic-bezier(0.23,1,0.32,1), color 160ms cubic-bezier(0.23,1,0.32,1), transform 160ms cubic-bezier(0.23,1,0.32,1); }
+.origin-filter-row:hover, .origin-filter-row.selected { border-color: #c9a227; border-left-color: #c9a227; background: #f0ece1; color: #0b6e4f; transform: translateY(-1px); }
+.origin-filter-row span:last-child { color: rgb(20 61 48 / 0.42); font-size: 0.63rem; font-variant-numeric: tabular-nums; }
+.courtyard-workspace { position: relative; }
+.courtyard-workspace::before { position: absolute; top: -1px; left: 0; width: 5.5rem; height: 2px; background: #c9a227; content: ""; }
+.name-card::after { position: absolute; top: 3.1rem; right: -1.8rem; width: 5.5rem; height: 6.5rem; border: 1px solid rgb(11 110 79 / 0.12); border-radius: 4rem 4rem 0 0; content: ""; pointer-events: none; }
 .unique-name-card::after { position: absolute; right: -2.8rem; bottom: -2.8rem; width: 7rem; height: 7rem; border: 1px solid rgb(201 162 39 / 0.30); content: ""; opacity: 0; transform: rotate(45deg) scale(0.7); transition: transform 220ms cubic-bezier(0.23,1,0.32,1), opacity 180ms cubic-bezier(0.23,1,0.32,1); }
 .unique-card-rule { transform-origin: left center; transition: transform 220ms cubic-bezier(0.23,1,0.32,1), opacity 180ms cubic-bezier(0.23,1,0.32,1); }
 .unique-card-motif { transition: transform 220ms cubic-bezier(0.23,1,0.32,1), opacity 180ms cubic-bezier(0.23,1,0.32,1); }

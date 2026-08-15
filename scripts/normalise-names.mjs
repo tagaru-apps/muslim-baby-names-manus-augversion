@@ -45,6 +45,7 @@ const clean = source
     meaning: String(record.meaning || "").replace(/\s+/g, " ").trim(),
     gender: normaliseGender(record.gender),
     origin: String(record.origin || "").replace(/\s+/g, " ").trim(),
+    sourceUrl: /^https?:\/\/\S+$/i.test(String(record.source_url || "").trim()) ? String(record.source_url).trim() : null,
   }))
   .filter((record) => record.name && record.meaning);
 
@@ -119,6 +120,7 @@ const names = preliminary.map((record) => {
     meaningTags: record.meaningTags,
     origin: record.origin,
     originConfidence: record.originConfidence,
+    sourceUrl: record.sourceUrl,
     phonetic: record.phonetic,
     phoneticConfidence: record.phoneticConfidence,
     letter: record.letter,
@@ -129,7 +131,7 @@ const names = preliminary.map((record) => {
     isQuranic: record.isQuranic,
     description: `${record.name} is listed in the CC0 Muslim Names Dataset as a ${datasetGender} name. The source records its meaning as “${record.meaning}”. Its origin label is ${record.originConfidence === "explicit" ? "stated directly in the source text" : record.originConfidence === "inferred" ? "inferred from the published script or etymological signal" : "not specified by the source"}. Its reader-friendly phonetic spelling is generated deterministically from the published transliteration and should be reviewed for names with complex or region-specific pronunciation.`,
     related,
-    source: "Muslim Names Dataset (CC0 1.0)",
+  source: "Muslim Names Dataset (CC0 1.0)",
   };
 });
 
@@ -162,6 +164,7 @@ export type NameRecord = {
   meaningTags: string[];
   origin: string;
   originConfidence: "explicit" | "inferred" | "unspecified";
+  sourceUrl: string | null;
   phonetic: string | null;
   phoneticConfidence: "high" | "auto";
   letter: string;

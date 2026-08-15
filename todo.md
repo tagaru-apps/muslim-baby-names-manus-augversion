@@ -141,3 +141,12 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 - [x] Inspect the converter and generated catalogue origin expectations.
 - [x] Add origin column mapping and validation to the converter and example CSV.
 - [x] Update import guidance with the approved origin taxonomy and test the revised template.
+
+## Import Reporting & Provenance
+
+- [x] Inspect existing import output, generated data fields, profile provenance UI, and browse sidebar.
+- [x] Add source URL mapping, validation, and gender-origin pre-import summary output.
+- [x] Carry source URLs into generated name records and display valid provenance links on profiles.
+- [x] Add clear origin counts and routes to the desktop and mobile browse filter sidebar.
+- [x] Apply the validated Quiet Courtyard archival-card and collection-frame refinements.
+- [x] Validate import reporting, provenance display, and origin navigation.
