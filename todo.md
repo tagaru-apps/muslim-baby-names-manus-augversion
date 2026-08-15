@@ -18,3 +18,9 @@
 - [x] Add guarded Arabic and English browser-speech controls to individual name pages.
 - [x] Include phonetic respellings and pronunciation metadata in generated static SEO pages.
 - [x] Regenerate the full catalogue, validate representative routes, and report confidence counts.
+
+## Name Sharing
+
+- [x] Inspect the existing name-detail action controls and shareable data fields.
+- [x] Add native browser sharing with a clipboard-copy fallback that includes phonetic pronunciation.
+- [x] Validate the share control in the detail-page layout and save the completed update.

@@ -1,6 +1,6 @@
 /** Quiet Courtyard profile: a spacious, source-minded name page that returns every detail to discovery. */
 import { Link, useLocation } from "wouter";
-import { ArrowLeft, Bookmark, ChevronRight, Copy, Heart, Languages, Volume2 } from "lucide-react";
+import { ArrowLeft, Bookmark, ChevronRight, Copy, Heart, Languages, Share2, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getName, getRelatedNames } from "@/lib/names";
 import { useFavorites } from "@/hooks/useFavorites";
@@ -14,6 +14,7 @@ export default function NameDetailPage() {
   const { favorites, toggleFavorite } = useFavorites();
   const [speechSupported, setSpeechSupported] = useState(false);
   const [activeVoice, setActiveVoice] = useState<"arabic" | "english" | null>(null);
+  const [shareStatus, setShareStatus] = useState<"idle" | "shared" | "copied">("idle");
   useEffect(() => {
     setSpeechSupported(typeof window !== "undefined" && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window);
     return () => window.speechSynthesis?.cancel();
@@ -23,6 +24,42 @@ export default function NameDetailPage() {
   const isFavorite = favorites.includes(record.slug);
   const sourceIndexed = record.origin === "Not specified in source";
   const hasArabicScript = /[\u0600-\u06FF]/.test(record.arabic);
+  const shareMessage = `${record.name}${record.phonetic ? ` (${record.phonetic})` : ""} — ${record.meaning}. Discover this name on Muslim Baby Names.`;
+  const copyText = async (text: string) => {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+    const fallback = document.createElement("textarea");
+    fallback.value = text;
+    fallback.setAttribute("readonly", "");
+    fallback.style.position = "fixed";
+    fallback.style.opacity = "0";
+    document.body.appendChild(fallback);
+    fallback.select();
+    document.execCommand("copy");
+    fallback.remove();
+  };
+  const shareName = async () => {
+    const url = typeof window !== "undefined" ? window.location.href : "";
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: `${record.name} — Muslim Baby Names`, text: shareMessage, url });
+        setShareStatus("shared");
+        window.setTimeout(() => setShareStatus("idle"), 2400);
+        return;
+      } catch {
+        return;
+      }
+    }
+    try {
+      await copyText(`${shareMessage}${url ? ` ${url}` : ""}`);
+      setShareStatus("copied");
+      window.setTimeout(() => setShareStatus("idle"), 2400);
+    } catch {
+      setShareStatus("idle");
+    }
+  };
   const speak = (voice: "arabic" | "english") => {
     if (!speechSupported || !record.phonetic) return;
     const useArabic = voice === "arabic" && hasArabicScript;
@@ -42,7 +79,7 @@ export default function NameDetailPage() {
         <nav className="mb-10 flex items-center gap-1.5 text-xs text-[#faf7f0]/55" aria-label="Breadcrumb"><Link href="/" className="hover:text-white">Home</Link><ChevronRight className="h-3.5 w-3.5" /><Link href={record.gender === "girl" ? "/girl-names" : "/boy-names"} className="hover:text-white">{record.gender === "girl" ? "Girl names" : "Boy names"}</Link><ChevronRight className="h-3.5 w-3.5" /><span>{record.name}</span></nav>
         <div className="grid items-end gap-10 lg:grid-cols-[1fr_auto]">
           <div><p className="eyebrow text-[#d9be70]">{sourceIndexed ? "Source-indexed" : record.origin} {record.gender === "unisex" ? "unisex" : record.gender} name</p><h1 className="mt-4 font-display text-6xl font-semibold tracking-[-0.07em] sm:text-7xl lg:text-8xl">{record.name}</h1><p className="mt-3 font-arabic text-4xl text-[#d9be70]" lang="ar" dir="rtl">{record.arabic}</p><p className="mt-7 max-w-xl font-display text-2xl leading-tight text-[#faf7f0]/90 sm:text-3xl">“{record.meaning}”</p></div>
-          <div className="flex flex-wrap gap-3 lg:justify-end"><button onClick={() => toggleFavorite(record.slug)} className={`inline-flex items-center gap-2 border px-4 py-3 text-sm font-semibold transition ${isFavorite ? "border-[#c9a227] bg-[#c9a227] text-emerald-950" : "border-white/30 bg-white/10 text-white hover:bg-white/15"}`}><Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} /> {isFavorite ? "Saved to shortlist" : "Save name"}</button><button onClick={() => navigator.clipboard?.writeText(`${record.name} — ${record.meaning}`)} className="inline-flex h-11 w-11 items-center justify-center border border-white/30 bg-white/10 text-white transition hover:bg-white/15" aria-label="Copy name and meaning"><Copy className="h-4 w-4" /></button></div>
+          <div className="flex flex-wrap gap-3 lg:justify-end"><button onClick={() => toggleFavorite(record.slug)} className={`inline-flex items-center gap-2 border px-4 py-3 text-sm font-semibold transition ${isFavorite ? "border-[#c9a227] bg-[#c9a227] text-emerald-950" : "border-white/30 bg-white/10 text-white hover:bg-white/15"}`}><Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} /> {isFavorite ? "Saved to shortlist" : "Save name"}</button><button onClick={shareName} className={`inline-flex h-11 items-center gap-2 border px-3 text-sm font-semibold transition ${shareStatus !== "idle" ? "border-[#c9a227] bg-[#c9a227] text-emerald-950" : "border-white/30 bg-white/10 text-white hover:bg-white/15"}`} aria-label="Share this name and pronunciation" title="Share name and pronunciation"><Share2 className="h-4 w-4" /><span className="hidden sm:inline">{shareStatus === "shared" ? "Shared" : shareStatus === "copied" ? "Copied" : "Share"}</span></button><button onClick={() => copyText(`${record.name}${record.phonetic ? ` (${record.phonetic})` : ""} — ${record.meaning}`)} className="inline-flex h-11 w-11 items-center justify-center border border-white/30 bg-white/10 text-white transition hover:bg-white/15" aria-label="Copy name, pronunciation, and meaning" title="Copy name and pronunciation"><Copy className="h-4 w-4" /></button></div>
         </div>
       </div>
     </section>
