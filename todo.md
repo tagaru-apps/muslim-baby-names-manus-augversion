@@ -72,3 +72,10 @@ The production-rendered boy sample uses the deep-teal geometric treatment and th
 - [x] Add distinctiveness annotations and a curated 100-name collection to the generated catalogue.
 - [x] Persist unique-collection gender and origin filters in shareable URL parameters.
 - [x] Display the curated editorial selection above collection results and validate its filter behaviour.
+
+## Share & Download Repair
+
+- [x] Inspect the current name-page share and social-image download action paths.
+- [x] Identify browser compatibility and deployment-route causes of the failure.
+- [x] Implement robust native sharing, image download, and fallback behaviour.
+- [x] Validate the repaired actions against a running production build.
