@@ -24,3 +24,11 @@
 - [x] Inspect the existing name-detail action controls and shareable data fields.
 - [x] Add native browser sharing with a clipboard-copy fallback that includes phonetic pronunciation.
 - [x] Validate the share control in the detail-page layout and save the completed update.
+
+## Origin Classification
+
+- [x] Inspect source descriptions for direct linguistic and etymological origin signals.
+- [x] Define and sample-test deterministic explicit and inferred origin rules.
+- [x] Generate `origin` and `originConfidence` values and rebuild the origin list.
+- [x] Update detail-page presentation and static SEO structured data for inferred origins.
+- [x] Validate at least three origin filter and route combinations and report coverage counts.

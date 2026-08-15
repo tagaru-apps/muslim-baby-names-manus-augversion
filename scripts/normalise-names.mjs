@@ -6,6 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { generatePhonetic } from "./phonetics.mjs";
+import { classifyOrigin } from "./origins.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -66,7 +67,8 @@ const preliminary = [...deduplicated.values()]
     const meaningTags = tagRules.filter(([, matcher]) => matcher.test(record.meaning)).map(([tag]) => tag);
     const isQuranic = /\bquran(?:ic)?\b/i.test(record.meaning);
     const pronunciation = generatePhonetic(record.name, record.arabic, isQuranic);
-    return { ...record, slug, letter, meaningTags: meaningTags.length ? meaningTags : ["meaning"], isQuranic, ...pronunciation };
+    const origin = classifyOrigin({ name: record.name, meaning: record.meaning, arabic: record.arabic, isQuranic });
+    return { ...record, slug, letter, meaningTags: meaningTags.length ? meaningTags : ["meaning"], isQuranic, ...pronunciation, ...origin };
   })
   .sort((a, b) => a.name.localeCompare(b.name, "en"));
 
@@ -89,23 +91,29 @@ const names = preliminary.map((record) => {
     gender: record.gender,
     meaning: record.meaning,
     meaningTags: record.meaningTags,
-    origin: "Not specified in source",
+    origin: record.origin,
+    originConfidence: record.originConfidence,
     phonetic: record.phonetic,
     phoneticConfidence: record.phoneticConfidence,
     letter: record.letter,
     popularity: 0,
     isUnique: false,
     isQuranic: record.isQuranic,
-    description: `${record.name} is listed in the CC0 Muslim Names Dataset as a ${datasetGender} name. The source records its meaning as “${record.meaning}”. Its reader-friendly phonetic spelling is generated deterministically from the published transliteration and should be reviewed for names with complex or region-specific pronunciation. The imported record does not include an origin taxonomy or editorial historical context.`,
+    description: `${record.name} is listed in the CC0 Muslim Names Dataset as a ${datasetGender} name. The source records its meaning as “${record.meaning}”. Its origin label is ${record.originConfidence === "explicit" ? "stated directly in the source text" : record.originConfidence === "inferred" ? "inferred from the published script or etymological signal" : "not specified by the source"}. Its reader-friendly phonetic spelling is generated deterministically from the published transliteration and should be reviewed for names with complex or region-specific pronunciation.`,
     related,
     source: "Muslim Names Dataset (CC0 1.0)",
   };
 });
 
 const availableTags = [...new Set(names.flatMap((record) => record.meaningTags))].sort();
+const availableOrigins = [...new Set(names.map((record) => record.origin))].sort((a, b) => a === "Not specified in source" ? 1 : b === "Not specified in source" ? -1 : a.localeCompare(b));
 const phoneticCounts = names.reduce((counts, record) => {
   const key = record.phonetic ? record.phoneticConfidence : "omitted";
   counts[key] = (counts[key] || 0) + 1;
+  return counts;
+}, {});
+const originCounts = names.reduce((counts, record) => {
+  counts[record.originConfidence] = (counts[record.originConfidence] || 0) + 1;
   return counts;
 }, {});
 const generated = `/**
@@ -123,6 +131,7 @@ export type NameRecord = {
   meaning: string;
   meaningTags: string[];
   origin: string;
+  originConfidence: "explicit" | "inferred" | "unspecified";
   phonetic: string | null;
   phoneticConfidence: "high" | "auto";
   letter: string;
@@ -136,7 +145,7 @@ export type NameRecord = {
 
 export const names: NameRecord[] = ${escapeTs(names)};
 export const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-export const origins = ["Not specified in source"];
+export const origins = ${escapeTs(availableOrigins)};
 export const meaningTags = ${escapeTs(availableTags)};
 export function getName(slug: string) { return names.find((entry) => entry.slug === slug); }
 export function getRelatedNames(record: NameRecord) { return record.related.map(getName).filter((item): item is NameRecord => Boolean(item)); }
@@ -145,3 +154,4 @@ export function getRelatedNames(record: NameRecord) { return record.related.map(
 fs.writeFileSync(outputPath, generated, "utf8");
 console.log(`Normalised ${names.length.toLocaleString()} unique name records from ${source.length.toLocaleString()} source rows.`);
 console.log(`Phonetic confidence — high: ${(phoneticCounts.high || 0).toLocaleString()}, auto: ${(phoneticCounts.auto || 0).toLocaleString()}, omitted: ${(phoneticCounts.omitted || 0).toLocaleString()}.`);
+console.log(`Origin confidence — explicit: ${(originCounts.explicit || 0).toLocaleString()}, inferred: ${(originCounts.inferred || 0).toLocaleString()}, unspecified: ${(originCounts.unspecified || 0).toLocaleString()}.`);
