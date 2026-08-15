@@ -58,3 +58,9 @@ The production-rendered boy sample uses the deep-teal geometric treatment and th
 - [x] Add square preview rendering, Instagram download, and local share-count state.
 - [x] Add combined shortlist image export using saved names from local storage.
 - [x] Validate the output image dimensions, share count, and shortlist export flow.
+
+## Unique Collection Repair
+
+- [x] Inspect the Unique Muslim names route and identify why its result set is empty or invalid.
+- [x] Implement a deterministic unique-name collection from the sourced catalogue.
+- [x] Validate navigation and direct access to the restored collection.

@@ -68,7 +68,13 @@ const preliminary = [...deduplicated.values()]
     const isQuranic = /\bquran(?:ic)?\b/i.test(record.meaning);
     const pronunciation = generatePhonetic(record.name, record.arabic, isQuranic);
     const origin = classifyOrigin({ name: record.name, meaning: record.meaning, arabic: record.arabic, isQuranic });
-    return { ...record, slug, letter, meaningTags: meaningTags.length ? meaningTags : ["meaning"], isQuranic, ...pronunciation, ...origin };
+    const normalizedName = record.name.toLowerCase().replace(/[^a-z]/g, "");
+    const regionalLineage = origin.originConfidence === "explicit" && !["Arabic", "Quranic"].includes(origin.origin);
+    const uncommonPattern = /(?:q|x|z|kh|gh|sh|aa|ee|ii|oo|uu)/.test(normalizedName);
+    const syllableCount = pronunciation.phonetic?.split(/[-\s]+/).filter(Boolean).length || 0;
+    const distinctivenessScore = (regionalLineage ? 2 : 0) + (isQuranic ? 1 : 0) + (uncommonPattern ? 1 : 0) + (normalizedName.length >= 8 ? 1 : 0) + (syllableCount >= 3 ? 1 : 0);
+    const isUnique = distinctivenessScore >= 2;
+    return { ...record, slug, letter, meaningTags: meaningTags.length ? meaningTags : ["meaning"], isQuranic, isUnique, ...pronunciation, ...origin };
   })
   .sort((a, b) => a.name.localeCompare(b.name, "en"));
 
@@ -97,7 +103,7 @@ const names = preliminary.map((record) => {
     phoneticConfidence: record.phoneticConfidence,
     letter: record.letter,
     popularity: 0,
-    isUnique: false,
+    isUnique: record.isUnique,
     isQuranic: record.isQuranic,
     description: `${record.name} is listed in the CC0 Muslim Names Dataset as a ${datasetGender} name. The source records its meaning as “${record.meaning}”. Its origin label is ${record.originConfidence === "explicit" ? "stated directly in the source text" : record.originConfidence === "inferred" ? "inferred from the published script or etymological signal" : "not specified by the source"}. Its reader-friendly phonetic spelling is generated deterministically from the published transliteration and should be reviewed for names with complex or region-specific pronunciation.`,
     related,
@@ -116,6 +122,7 @@ const originCounts = names.reduce((counts, record) => {
   counts[record.originConfidence] = (counts[record.originConfidence] || 0) + 1;
   return counts;
 }, {});
+const uniqueCount = names.filter((record) => record.isUnique).length;
 const generated = `/**
  * GENERATED FILE — do not edit manually.
  * Source: Takiuddin Ahmed, Muslim Names Dataset (CC0 1.0).
@@ -155,3 +162,4 @@ fs.writeFileSync(outputPath, generated, "utf8");
 console.log(`Normalised ${names.length.toLocaleString()} unique name records from ${source.length.toLocaleString()} source rows.`);
 console.log(`Phonetic confidence — high: ${(phoneticCounts.high || 0).toLocaleString()}, auto: ${(phoneticCounts.auto || 0).toLocaleString()}, omitted: ${(phoneticCounts.omitted || 0).toLocaleString()}.`);
 console.log(`Origin confidence — explicit: ${(originCounts.explicit || 0).toLocaleString()}, inferred: ${(originCounts.inferred || 0).toLocaleString()}, unspecified: ${(originCounts.unspecified || 0).toLocaleString()}.`);
+console.log(`Source-distinct collection: ${uniqueCount.toLocaleString()} names meet two or more transparent linguistic distinctiveness signals.`);
