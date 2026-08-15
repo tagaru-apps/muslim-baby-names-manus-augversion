@@ -26,7 +26,7 @@ export default function FavoritesPage() {
     Promise.all(recentExports.map(async (entry) => {
       const record = nameBySlug.get(entry.slug);
       if (!record) return null;
-      const blob = await createNameSocialImage(record, entry.format, { includePhonetic: entry.includePhonetic, dedication: entry.dedication });
+      const blob = await createNameSocialImage(record, entry.format, { includePhonetic: entry.includePhonetic, dedication: entry.dedication, cardStyle: entry.cardStyle || "heritage" });
       const url = URL.createObjectURL(blob);
       urls.push(url);
       return [entry.id, url] as const;

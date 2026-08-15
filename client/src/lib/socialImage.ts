@@ -1,10 +1,14 @@
 import type { NameRecord } from "@/lib/names";
 
 export type SocialFormat = "landscape" | "instagram" | "story";
-export type SocialImageOptions = { includePhonetic?: boolean; dedication?: string };
+export type CardStyle = "heritage" | "warm" | "dark" | "minimal";
+export type SocialImageOptions = { includePhonetic?: boolean; dedication?: string; cardStyle?: CardStyle };
 type Theme = { start: string; end: string; accent: string; pale: string; muted: string };
 const brandAssetUrls = { mark: "/brand-assets/mark.png", texture: "/brand-assets/texture.jpg" };
 let brandAssetPromise: Promise<{ mark: HTMLImageElement | null; texture: HTMLImageElement | null }> | null = null;
+const CARD_CACHE = "muslim-baby-names-social-card-cache-v1";
+const CARD_CACHE_INDEX = "muslim-baby-names:social-card-cache-index";
+const CARD_CACHE_LIMIT = 24;
 
 function loadImage(src: string) {
   return new Promise<HTMLImageElement>((resolve, reject) => {
@@ -20,11 +24,42 @@ async function loadBrandAssets() {
   return brandAssetPromise;
 }
 
-const themeFor = (record: NameRecord): Theme => {
+const heritageThemeFor = (record: NameRecord): Theme => {
   if (record.isQuranic) return { start: "#151a42", end: "#413468", accent: "#e7c66d", pale: "#f7f2e9", muted: "#d3cce7" };
   if (record.gender === "girl") return { start: "#642541", end: "#934c5e", accent: "#f0c878", pale: "#fff5ed", muted: "#efd8d4" };
   return { start: "#003f3b", end: "#164b62", accent: "#d5b24b", pale: "#fff9ed", muted: "#c7d6ce" };
 };
+
+const themeFor = (record: NameRecord, style: CardStyle): Theme => {
+  if (style === "warm") return { start: "#74482f", end: "#aa6e45", accent: "#ffe0a0", pale: "#fff8ee", muted: "#f0d9c1" };
+  if (style === "dark") return { start: "#101a20", end: "#273842", accent: "#d8b762", pale: "#f7f4ed", muted: "#b8c6c5" };
+  if (style === "minimal") return { start: "#f6f0e4", end: "#e8dece", accent: "#0b6e4f", pale: "#173f31", muted: "#5c7067" };
+  return heritageThemeFor(record);
+};
+
+const cachePath = (key: string) => `/__social-card-cache/${encodeURIComponent(key)}.png`;
+const cacheKeyFor = (record: NameRecord, format: SocialFormat, options: Required<SocialImageOptions>) => JSON.stringify({ v: 2, slug: record.slug, format, phonetic: options.includePhonetic, dedication: options.dedication, style: options.cardStyle });
+async function readCardCache(key: string) {
+  try {
+    if (!("caches" in window)) return null;
+    const response = await window.caches.open(CARD_CACHE).then((cache) => cache.match(cachePath(key)));
+    return response ? response.blob() : null;
+  } catch { return null; }
+}
+async function writeCardCache(key: string, blob: Blob) {
+  try {
+    if (!("caches" in window)) return;
+    const cache = await window.caches.open(CARD_CACHE);
+    await cache.put(cachePath(key), new Response(blob, { headers: { "Content-Type": "image/png" } }));
+    const parsed = JSON.parse(window.localStorage.getItem(CARD_CACHE_INDEX) || "[]");
+    const current = Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string" && item !== key) : [];
+    const next = [key, ...current].slice(0, CARD_CACHE_LIMIT);
+    await Promise.all(current.slice(CARD_CACHE_LIMIT - 1).map((stale) => cache.delete(cachePath(stale))));
+    window.localStorage.setItem(CARD_CACHE_INDEX, JSON.stringify(next));
+  } catch {
+    // Cache storage is optional; exports remain available without persistence.
+  }
+}
 
 const crop = (value: string, limit: number) => value.length > limit ? `${value.slice(0, limit - 1).trimEnd()}…` : value;
 const footerFor = (record: NameRecord) => record.isQuranic ? "QURANIC NAME · MEANINGFUL NAMES" : `${record.gender === "girl" ? "GIRL" : "BOY"} · ${record.origin.toUpperCase()} · MEANINGFUL NAMES`;
@@ -57,16 +92,19 @@ function drawStoryMotif(ctx: CanvasRenderingContext2D, record: NameRecord, theme
 }
 
 export async function createNameSocialImage(record: NameRecord, format: SocialFormat, options: SocialImageOptions = {}): Promise<Blob> {
+  const settings: Required<SocialImageOptions> = { includePhonetic: options.includePhonetic ?? true, dedication: options.dedication?.trim().slice(0, 80) || "", cardStyle: options.cardStyle ?? "heritage" };
+  const cacheKey = cacheKeyFor(record, format, settings);
+  const cached = await readCardCache(cacheKey);
+  if (cached) return cached;
   await document.fonts?.ready;
   const brandAssets = await loadBrandAssets();
-  const includePhonetic = options.includePhonetic ?? true;
-  const dedication = options.dedication?.trim().slice(0, 80) || "";
+  const { includePhonetic, dedication, cardStyle } = settings;
   const dimensions = format === "story" ? { width: 1080, height: 1920, grid: 80, nameY: 760, arabicY: 846, phoneticY: 1000, meaningY: 1075, footerY: 1668, ruleY: 1598, dedicationY: 1516, circleY: 495, circleRadius: 430, brandY: 94, ruleBrandY: 126, titleSize: 134, bodySize: 29 } : format === "instagram" ? { width: 1080, height: 1080, grid: 72, nameY: 432, arabicY: 516, phoneticY: 655, meaningY: 732, footerY: 912, ruleY: 850, dedicationY: 810, circleY: 310, circleRadius: 330, brandY: 94, ruleBrandY: 126, titleSize: 134, bodySize: 27 } : { width: 1200, height: 630, grid: 68, nameY: 290, arabicY: 365, phoneticY: 445, meaningY: 507, footerY: 600, ruleY: 0, dedicationY: 553, circleY: 220, circleRadius: 230, brandY: 88, ruleBrandY: 120, titleSize: 116, bodySize: 24 };
   const { width, height, grid, nameY, arabicY, phoneticY, meaningY, footerY, ruleY, dedicationY, circleY, circleRadius, brandY, ruleBrandY, titleSize, bodySize } = dimensions;
-  const theme = themeFor(record); const canvas = document.createElement("canvas"); canvas.width = width; canvas.height = height;
+  const theme = themeFor(record, cardStyle); const canvas = document.createElement("canvas"); canvas.width = width; canvas.height = height;
   const ctx = canvas.getContext("2d"); if (!ctx) throw new Error("Canvas is unavailable");
   const gradient = ctx.createLinearGradient(0, 0, width, height); gradient.addColorStop(0, theme.start); gradient.addColorStop(1, theme.end); ctx.fillStyle = gradient; ctx.fillRect(0, 0, width, height);
-  if (brandAssets.texture) { ctx.save(); ctx.globalAlpha = 0.09; ctx.drawImage(brandAssets.texture, 0, 0, width, height); ctx.restore(); }
+  if (brandAssets.texture) { ctx.save(); ctx.globalAlpha = cardStyle === "minimal" ? 0.035 : cardStyle === "dark" ? 0.055 : 0.09; ctx.drawImage(brandAssets.texture, 0, 0, width, height); ctx.restore(); }
   ctx.globalAlpha = 0.12; ctx.strokeStyle = theme.accent; ctx.lineWidth = 1;
   for (let x = 0; x < width + grid; x += grid) for (let y = 0; y < height + grid; y += grid) { ctx.beginPath(); ctx.moveTo(x + grid / 2, y); ctx.lineTo(x + grid, y + grid / 2); ctx.lineTo(x + grid / 2, y + grid); ctx.lineTo(x, y + grid / 2); ctx.closePath(); ctx.stroke(); }
   ctx.globalAlpha = 0.08; ctx.fillStyle = theme.accent; ctx.beginPath(); ctx.arc(width * 0.83, circleY, circleRadius, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
@@ -83,7 +121,9 @@ export async function createNameSocialImage(record: NameRecord, format: SocialFo
   if (ruleY) { ctx.fillStyle = theme.accent; ctx.globalAlpha = 0.6; ctx.fillRect(margin, ruleY, width - margin * 2, 1); ctx.globalAlpha = 1; }
   ctx.fillStyle = theme.accent; ctx.font = `700 ${format === "landscape" ? 17 : 18}px 'DM Sans', sans-serif`; ctx.letterSpacing = "3px"; ctx.fillText(footerFor(record), margin + 4, footerY); ctx.letterSpacing = "0px";
   if (format === "story" || format === "instagram") { ctx.fillStyle = theme.muted; ctx.font = "18px 'DM Sans', sans-serif"; ctx.fillText("A name to carry with care.", margin + 4, footerY + 65); }
-  return new Promise<Blob>((resolve, reject) => canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("Could not create social image")), "image/png"));
+  const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((image) => image ? resolve(image) : reject(new Error("Could not create social image")), "image/png"));
+  void writeCardCache(cacheKey, blob);
+  return blob;
 }
 
 export async function downloadNameSocialImage(record: NameRecord, format: SocialFormat, options: SocialImageOptions = {}) {

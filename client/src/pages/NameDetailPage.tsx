@@ -9,7 +9,7 @@ import { useFavorites } from "@/hooks/useFavorites";
 import { NameCard } from "@/components/NameCard";
 import NotFound from "@/pages/NotFound";
 import { useShareCount } from "@/hooks/useShareCount";
-import { createNameSocialImage, downloadNameSocialImage, type SocialFormat } from "@/lib/socialImage";
+import { createNameSocialImage, downloadNameSocialImage, type CardStyle, type SocialFormat } from "@/lib/socialImage";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { recordExport } from "@/lib/exportHistory";
 
@@ -29,6 +29,7 @@ export default function NameDetailPage() {
   const [previewLoading, setPreviewLoading] = useState(false);
   const [includePhonetic, setIncludePhonetic] = useState(true);
   const [dedication, setDedication] = useState("");
+  const [cardStyle, setCardStyle] = useState<CardStyle>("heritage");
   useEffect(() => {
     setSpeechSupported(typeof window !== "undefined" && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window);
     return () => window.speechSynthesis?.cancel();
@@ -39,7 +40,7 @@ export default function NameDetailPage() {
     let objectUrl = "";
     setPreviewLoading(true);
     setPreviewUrl(null);
-    createNameSocialImage(record, previewFormat, { includePhonetic, dedication }).then((blob) => {
+    createNameSocialImage(record, previewFormat, { includePhonetic, dedication, cardStyle }).then((blob) => {
       if (!active) return;
       objectUrl = URL.createObjectURL(blob);
       setPreviewUrl(objectUrl);
@@ -52,7 +53,7 @@ export default function NameDetailPage() {
       active = false;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [dedication, includePhonetic, previewFormat, previewOpen, record]);
+  }, [cardStyle, dedication, includePhonetic, previewFormat, previewOpen, record]);
   if (!record) return <NotFound />;
   const related = getRelatedNames(record);
   const isFavorite = favorites.includes(record.slug);
@@ -88,7 +89,7 @@ export default function NameDetailPage() {
         let shareData: ShareData = { title: `${record.name} — Muslim Baby Names`, text: shareMessage, url };
         if (navigator.canShare) {
           setImageAction("landscape");
-          const image = await createNameSocialImage(record, "landscape", { includePhonetic, dedication });
+          const image = await createNameSocialImage(record, "landscape", { includePhonetic, dedication, cardStyle });
           const file = new File([image], `${record.slug}-muslim-baby-name.png`, { type: "image/png" });
           if (navigator.canShare({ files: [file] })) shareData = { ...shareData, files: [file] };
           setImageAction(null);
@@ -121,8 +122,8 @@ export default function NameDetailPage() {
   const downloadImage = async (format: SocialFormat = previewFormat) => {
     try {
       setImageAction(format);
-      await downloadNameSocialImage(record, format, { includePhonetic, dedication });
-      recordExport(record, { format, includePhonetic, dedication });
+      await downloadNameSocialImage(record, format, { includePhonetic, dedication, cardStyle });
+      recordExport(record, { format, includePhonetic, dedication, cardStyle });
       toast.success(format === "story" ? "Story image downloaded" : format === "instagram" ? "Instagram image downloaded" : "Social image downloaded", { description: "Your image is ready to share." });
     } catch {
       toast.error("Could not create image", { description: "Please try the download again." });
@@ -133,12 +134,12 @@ export default function NameDetailPage() {
   const shareStory = async () => {
     try {
       setImageAction("story");
-      const image = await createNameSocialImage(record, "story", { includePhonetic, dedication });
+      const image = await createNameSocialImage(record, "story", { includePhonetic, dedication, cardStyle });
       const storyFile = new File([image], `${record.slug}-instagram-story.png`, { type: "image/png" });
       if (navigator.share && navigator.canShare?.({ files: [storyFile] })) {
         await navigator.share({ files: [storyFile], title: `${record.name} Story card` });
         recordShare();
-        recordExport(record, { format: "story", includePhonetic, dedication });
+        recordExport(record, { format: "story", includePhonetic, dedication, cardStyle });
         toast.success("Story image ready to share", { description: "Choose Instagram Stories from your device share sheet." });
       } else {
         openPreview("story");
@@ -182,6 +183,7 @@ export default function NameDetailPage() {
         </div>
       </div>
     </section>
+    <section className="border-b border-emerald-950/10 bg-[#f0ece1] px-5 py-4 sm:px-8 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3"><div><p className="eyebrow text-[#8b6d22]">Export card style</p><p className="mt-1 text-sm text-emerald-950/65">Choose a visual mood for every new preview and download.</p></div><div className="flex flex-wrap gap-2" aria-label="Social card style"><button onClick={() => setCardStyle("warm")} className={`export-style ${cardStyle === "warm" ? "selected" : ""}`}><span className="export-style-dot warm" />Warm</button><button onClick={() => setCardStyle("dark")} className={`export-style ${cardStyle === "dark" ? "selected" : ""}`}><span className="export-style-dot dark" />Dark</button><button onClick={() => setCardStyle("minimal")} className={`export-style ${cardStyle === "minimal" ? "selected" : ""}`}><span className="export-style-dot minimal" />Minimal</button></div></div></section>
     <Dialog open={previewOpen} onOpenChange={setPreviewOpen}><DialogContent className="max-h-[calc(100vh-2rem)] max-w-2xl overflow-y-auto border-[#c9a227]/55 bg-[#faf7f0] p-5 sm:p-7"><DialogHeader><p className="eyebrow text-[#8b6d22]">Social card preview</p><DialogTitle className="font-display text-3xl tracking-[-0.05em] text-emerald-950">{previewFormat === "story" ? "Instagram Story card" : previewFormat === "instagram" ? "Instagram square card" : "Landscape social card"}</DialogTitle><DialogDescription>Choose whether to include the phonetic reading guide and add a short personal note before exporting.</DialogDescription></DialogHeader><div className={`relative overflow-hidden border border-emerald-950/12 bg-emerald-950/10 ${previewFormat === "story" ? "mx-auto max-w-[300px]" : ""}`}>{previewLoading && <div className="grid min-h-64 place-items-center gap-3 text-sm font-semibold text-emerald-950/65"><LoaderCircle className="h-6 w-6 animate-spin text-[#0b6e4f]" /><span>Preparing your branded card…</span></div>}{previewUrl && <img src={previewUrl} alt={`${record.name} social card preview`} className="block h-auto w-full" />}</div><div className="divide-y divide-emerald-950/10 border-y border-emerald-950/10"><label className="flex items-center justify-between gap-4 py-4"><span><span className="block text-sm font-semibold text-emerald-950">Include phonetic spelling</span><span className="mt-1 block text-xs leading-5 text-emerald-950/60">Shows the reader-friendly pronunciation guide on your card.</span></span><input type="checkbox" checked={includePhonetic} onChange={(event) => setIncludePhonetic(event.target.checked)} className="h-5 w-5 accent-[#0b6e4f]" /></label><label className="block py-4"><span className="block text-sm font-semibold text-emerald-950">Personal dedication</span><span className="mt-1 block text-xs leading-5 text-emerald-950/60">Optional. Add a short note such as “For our little light.”</span><input value={dedication} onChange={(event) => setDedication(event.target.value.slice(0, 80))} maxLength={80} placeholder="A short note for this name" className="mt-3 w-full border border-emerald-950/15 bg-[#fffdf8] px-3 py-2.5 text-sm text-emerald-950 outline-none transition placeholder:text-emerald-950/35 focus:border-[#0b6e4f]" /><span className="mt-1 block text-right text-[0.68rem] text-emerald-950/45">{dedication.length}/80</span></label></div><DialogFooter><button onClick={() => setPreviewOpen(false)} className="border border-emerald-950/15 px-4 py-2.5 text-sm font-semibold text-emerald-950">Close</button><button onClick={() => downloadImage()} disabled={previewLoading || imageAction !== null} className="inline-flex items-center justify-center gap-2 bg-[#0b6e4f] px-4 py-2.5 text-sm font-semibold text-[#faf7f0] transition hover:bg-emerald-950 disabled:cursor-wait disabled:opacity-60">{imageAction ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}{imageAction ? "Creating image" : "Download image"}</button></DialogFooter></DialogContent></Dialog>
     <section className="mx-auto grid max-w-[1440px] gap-12 px-5 py-12 sm:px-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:px-12 lg:py-16">
       <article className="max-w-3xl"><p className="eyebrow mb-4">The story of {record.name}</p><h2 className="font-display text-4xl font-semibold leading-[1.02] tracking-[-0.05em] text-emerald-950">A name that carries <em className="font-normal">{record.meaningTags[0]}</em>.</h2><p className="mt-6 text-base leading-8 text-emerald-950/70">{record.description} We present each name with the kind of detail that supports a thoughtful decision: an accessible pronunciation, its heritage, and the qualities most commonly associated with it. Meanings can have rich regional and linguistic nuance, so the Sources & Methodology page explains how our editorial process approaches them.</p>

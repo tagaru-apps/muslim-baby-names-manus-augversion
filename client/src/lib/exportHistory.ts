@@ -1,5 +1,5 @@
 import type { NameRecord } from "@/lib/names";
-import type { SocialFormat } from "@/lib/socialImage";
+import type { CardStyle, SocialFormat } from "@/lib/socialImage";
 
 const STORAGE_KEY = "muslim-baby-names:recent-exports";
 const MAX_ENTRIES = 8;
@@ -11,6 +11,7 @@ export type ExportHistoryEntry = {
   format: SocialFormat;
   includePhonetic: boolean;
   dedication: string;
+  cardStyle: CardStyle;
   createdAt: string;
 };
 
@@ -23,7 +24,7 @@ export function getRecentExports(): ExportHistoryEntry[] {
   }
 }
 
-export function recordExport(record: NameRecord, settings: { format: SocialFormat; includePhonetic: boolean; dedication: string }) {
+export function recordExport(record: NameRecord, settings: { format: SocialFormat; includePhonetic: boolean; dedication: string; cardStyle: CardStyle }) {
   const entry: ExportHistoryEntry = {
     id: `${record.slug}-${Date.now()}`,
     slug: record.slug,
@@ -31,10 +32,11 @@ export function recordExport(record: NameRecord, settings: { format: SocialForma
     format: settings.format,
     includePhonetic: settings.includePhonetic,
     dedication: settings.dedication.trim().slice(0, 80),
+    cardStyle: settings.cardStyle,
     createdAt: new Date().toISOString(),
   };
   try {
-    const existing = getRecentExports().filter((item) => !(item.slug === entry.slug && item.format === entry.format));
+    const existing = getRecentExports().filter((item) => !(item.slug === entry.slug && item.format === entry.format && item.cardStyle === entry.cardStyle));
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify([entry, ...existing].slice(0, MAX_ENTRIES)));
   } catch {
     // Recent exports are a progressive enhancement when local storage is unavailable.

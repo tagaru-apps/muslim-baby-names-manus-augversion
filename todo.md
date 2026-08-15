@@ -109,3 +109,15 @@ The production-rendered boy sample uses the deep-teal geometric treatment and th
 - [x] Apply the public CDN brand mark and texture to generated social cards.
 - [x] Add a visible loading spinner and clearer generation status to preview and export controls.
 - [x] Validate branded cards and loading feedback in the running site and production build.
+
+## Configurable Social Cards
+
+- [x] Inspect current export rendering, modal controls, and local export history.
+- [x] Design warmer, darker, and minimal export themes with stable cache keys.
+- [x] Add theme selection and custom dedication support to preview and export actions.
+- [x] Cache recently generated card blobs locally and reuse matching renders.
+- [x] Validate theme selection, cache reuse, and custom dedication exports.
+
+### Configurable Card Validation Notes
+
+The completed name-detail page presents the Warm, Dark, and Minimal selector directly below the export controls, with readable labels and selected-state treatment. The dedicated social-image cache keys include name, format, phonetic visibility, dedication, and card style, so exact repeated exports reuse their locally stored image blob while changed settings regenerate safely.

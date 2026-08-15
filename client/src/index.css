@@ -165,3 +165,10 @@
 .pronunciation-play { display: inline-flex; height: 2rem; min-width: 2rem; align-items: center; justify-content: center; gap: 0.15rem; border: 1px solid rgba(11,110,79,0.25); background: #f0ece1; color: #0b6e4f; transition: transform 160ms cubic-bezier(0.23,1,0.32,1), background-color 160ms cubic-bezier(0.23,1,0.32,1), color 160ms cubic-bezier(0.23,1,0.32,1); }
 .pronunciation-play:hover, .pronunciation-play.is-speaking { background: #0b6e4f; color: #faf7f0; }
 .pronunciation-play:active { transform: scale(0.97); }
+.export-style { display: inline-flex; align-items: center; gap: 0.45rem; border: 1px solid rgba(18,61,48,0.18); background: #fffdf8; padding: 0.58rem 0.76rem; color: #173f31; font-size: 0.78rem; font-weight: 700; transition: transform 160ms cubic-bezier(0.23,1,0.32,1), border-color 160ms cubic-bezier(0.23,1,0.32,1), background-color 160ms cubic-bezier(0.23,1,0.32,1); }
+.export-style:hover, .export-style.selected { border-color: #0b6e4f; background: #e9f3ee; }
+.export-style:active { transform: scale(0.97); }
+.export-style-dot { height: 0.65rem; width: 0.65rem; border-radius: 999px; border: 1px solid rgba(18,61,48,0.18); }
+.export-style-dot.warm { background: linear-gradient(135deg, #74482f, #aa6e45); }
+.export-style-dot.dark { background: linear-gradient(135deg, #101a20, #273842); }
+.export-style-dot.minimal { background: linear-gradient(135deg, #f6f0e4, #0b6e4f); }
