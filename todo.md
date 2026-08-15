@@ -87,3 +87,11 @@ The production-rendered boy sample uses the deep-teal geometric treatment and th
 - [x] Add phonetic visibility state to generated social card formats.
 - [x] Add Story share/download and preview-modal export flows.
 - [x] Validate all social-card dimensions, preview states, and export actions.
+
+## Story Motifs & Export History
+
+- [x] Inspect current social-image generation, preview modal, and shortlist page composition.
+- [x] Design distinct girl, boy, and Quranic Story motifs plus dedication placement.
+- [x] Add personal dedication controls to card preview and exports.
+- [x] Persist a concise device-local export history and display it on the shortlist page.
+- [x] Validate Story rendering, dedication inclusion, and recent-export carousel behaviour.
