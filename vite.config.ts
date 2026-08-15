@@ -168,7 +168,30 @@ function vitePluginLegacyAssetRewrite(): Plugin {
   };
 }
 
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector(), vitePluginLegacyAssetRewrite()];
+function vitePluginBrandAssetProxy(): Plugin {
+  const assets: Record<string, string> = {
+    "/mark.png": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/TRWKPHudtUubyAyS.png",
+    "/texture.jpg": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/hMGbMscFCaEQBfCD.jpg",
+  };
+  return {
+    name: "brand-asset-proxy",
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use("/brand-assets", async (req, res, next) => {
+        const source = assets[(req.url || "").split("?")[0]];
+        if (!source) return next();
+        try {
+          const upstream = await fetch(source);
+          if (!upstream.ok) return next();
+          const body = Buffer.from(await upstream.arrayBuffer());
+          res.writeHead(200, { "Content-Type": upstream.headers.get("content-type") || "application/octet-stream", "Cache-Control": "public, max-age=604800" });
+          res.end(body);
+        } catch { next(); }
+      });
+    },
+  };
+}
+
+const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector(), vitePluginLegacyAssetRewrite(), vitePluginBrandAssetProxy()];
 
 export default defineConfig({
   plugins,

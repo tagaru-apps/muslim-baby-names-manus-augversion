@@ -20,6 +20,10 @@ type PreviewRecord = {
 };
 type PreviewFormat = "landscape" | "instagram";
 type CardTheme = { start: string; end: string; accent: string; pale: string; muted: string; pattern: string };
+const brandAssets: Record<string, string> = {
+  mark: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/TRWKPHudtUubyAyS.png",
+  texture: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/hMGbMscFCaEQBfCD.jpg",
+};
 
 const escapeSvg = (value: string) => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 const trim = (value: string, limit: number) => value.length > limit ? `${value.slice(0, limit - 1).trimEnd()}…` : value;
@@ -64,6 +68,18 @@ async function startServer() {
   const previewDataPath = path.resolve(__dirname, "name-preview-records.json");
   const previews: PreviewRecord[] = fs.existsSync(previewDataPath) ? JSON.parse(fs.readFileSync(previewDataPath, "utf8")) : [];
   const previewBySlug = new Map(previews.map((record) => [record.slug, record]));
+
+  app.get("/brand-assets/:asset", async (req, res) => {
+    const source = brandAssets[req.params.asset.replace(/\.(png|jpg)$/, "")];
+    if (!source) return res.status(404).end();
+    try {
+      const upstream = await fetch(source);
+      if (!upstream.ok) return res.status(502).end();
+      const body = Buffer.from(await upstream.arrayBuffer());
+      res.set({ "Content-Type": upstream.headers.get("content-type") || "application/octet-stream", "Cache-Control": "public, max-age=604800" });
+      return res.send(body);
+    } catch { return res.status(502).end(); }
+  });
 
   const servePreview = (format: PreviewFormat) => (req: express.Request, res: express.Response) => {
     const record = previewBySlug.get(req.params.slug);

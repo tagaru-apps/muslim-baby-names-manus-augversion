@@ -102,3 +102,10 @@ The production-rendered boy sample uses the deep-teal geometric treatment and th
 - [x] Preserve each visual asset on a deployment-safe hosted URL and replace proxy references.
 - [x] Remove the unresolved analytics script from the document head.
 - [x] Build the production bundle and verify no dev-only asset or analytics references remain.
+
+## Branded Social Card Assets
+
+- [x] Inspect social-card rendering and existing image-generation loading states.
+- [x] Apply the public CDN brand mark and texture to generated social cards.
+- [x] Add a visible loading spinner and clearer generation status to preview and export controls.
+- [x] Validate branded cards and loading feedback in the running site and production build.
