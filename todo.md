@@ -64,3 +64,11 @@ The production-rendered boy sample uses the deep-teal geometric treatment and th
 - [x] Inspect the Unique Muslim names route and identify why its result set is empty or invalid.
 - [x] Implement a deterministic unique-name collection from the sourced catalogue.
 - [x] Validate navigation and direct access to the restored collection.
+
+## Unique Collection Enrichment
+
+- [x] Inspect existing unique-name data, card presentation, and filter state.
+- [x] Define programmatic distinctiveness-note reasons and transparent editorial selection criteria.
+- [x] Add distinctiveness annotations and a curated 100-name collection to the generated catalogue.
+- [x] Persist unique-collection gender and origin filters in shareable URL parameters.
+- [x] Display the curated editorial selection above collection results and validate its filter behaviour.

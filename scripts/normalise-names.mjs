@@ -74,7 +74,14 @@ const preliminary = [...deduplicated.values()]
     const syllableCount = pronunciation.phonetic?.split(/[-\s]+/).filter(Boolean).length || 0;
     const distinctivenessScore = (regionalLineage ? 2 : 0) + (isQuranic ? 1 : 0) + (uncommonPattern ? 1 : 0) + (normalizedName.length >= 8 ? 1 : 0) + (syllableCount >= 3 ? 1 : 0);
     const isUnique = distinctivenessScore >= 2;
-    return { ...record, slug, letter, meaningTags: meaningTags.length ? meaningTags : ["meaning"], isQuranic, isUnique, ...pronunciation, ...origin };
+    const distinctivenessNotes = [
+      ...(regionalLineage ? [`Source-stated ${origin.origin} lineage`] : []),
+      ...(isQuranic ? ["Quranic connection"] : []),
+      ...(uncommonPattern ? ["Uncommon transliteration pattern"] : []),
+      ...(normalizedName.length >= 8 ? ["Extended name form"] : []),
+      ...(syllableCount >= 3 ? ["Multi-syllable rhythm"] : []),
+    ];
+    return { ...record, slug, letter, meaningTags: meaningTags.length ? meaningTags : ["meaning"], isQuranic, isUnique, distinctivenessScore, distinctivenessNotes, ...pronunciation, ...origin };
   })
   .sort((a, b) => a.name.localeCompare(b.name, "en"));
 
@@ -85,6 +92,17 @@ for (const record of preliminary) {
   list.push(record);
   grouped.set(key, list);
 }
+
+const editorialCandidates = preliminary.filter((record) => record.isUnique).sort((a, b) => b.distinctivenessScore - a.distinctivenessScore || a.name.localeCompare(b.name, "en"));
+const editorialSelection = [
+  ...editorialCandidates.filter((record) => record.gender === "girl").slice(0, 45),
+  ...editorialCandidates.filter((record) => record.gender === "boy").slice(0, 45),
+];
+for (const record of editorialCandidates) {
+  if (editorialSelection.length >= 100) break;
+  if (!editorialSelection.some((selection) => selection.slug === record.slug)) editorialSelection.push(record);
+}
+const editorialRanks = new Map(editorialSelection.map((record, index) => [record.slug, index + 1]));
 
 const names = preliminary.map((record) => {
   const peers = grouped.get(`${record.gender}|${record.letter}`) || [];
@@ -104,6 +122,8 @@ const names = preliminary.map((record) => {
     letter: record.letter,
     popularity: 0,
     isUnique: record.isUnique,
+    distinctivenessNotes: record.distinctivenessNotes,
+    editorialRank: editorialRanks.get(record.slug) || null,
     isQuranic: record.isQuranic,
     description: `${record.name} is listed in the CC0 Muslim Names Dataset as a ${datasetGender} name. The source records its meaning as “${record.meaning}”. Its origin label is ${record.originConfidence === "explicit" ? "stated directly in the source text" : record.originConfidence === "inferred" ? "inferred from the published script or etymological signal" : "not specified by the source"}. Its reader-friendly phonetic spelling is generated deterministically from the published transliteration and should be reviewed for names with complex or region-specific pronunciation.`,
     related,
@@ -123,6 +143,7 @@ const originCounts = names.reduce((counts, record) => {
   return counts;
 }, {});
 const uniqueCount = names.filter((record) => record.isUnique).length;
+const editorialCount = names.filter((record) => record.editorialRank).length;
 const generated = `/**
  * GENERATED FILE — do not edit manually.
  * Source: Takiuddin Ahmed, Muslim Names Dataset (CC0 1.0).
@@ -144,6 +165,8 @@ export type NameRecord = {
   letter: string;
   popularity: number;
   isUnique?: boolean;
+  distinctivenessNotes: string[];
+  editorialRank: number | null;
   isQuranic?: boolean;
   description: string;
   related: string[];
@@ -154,6 +177,7 @@ export const names: NameRecord[] = ${escapeTs(names)};
 export const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 export const origins = ${escapeTs(availableOrigins)};
 export const meaningTags = ${escapeTs(availableTags)};
+export const editorialUniquePicks = names.filter((entry) => entry.editorialRank !== null).sort((a, b) => (a.editorialRank || 0) - (b.editorialRank || 0));
 export function getName(slug: string) { return names.find((entry) => entry.slug === slug); }
 export function getRelatedNames(record: NameRecord) { return record.related.map(getName).filter((item): item is NameRecord => Boolean(item)); }
 `;
@@ -163,3 +187,4 @@ console.log(`Normalised ${names.length.toLocaleString()} unique name records fro
 console.log(`Phonetic confidence — high: ${(phoneticCounts.high || 0).toLocaleString()}, auto: ${(phoneticCounts.auto || 0).toLocaleString()}, omitted: ${(phoneticCounts.omitted || 0).toLocaleString()}.`);
 console.log(`Origin confidence — explicit: ${(originCounts.explicit || 0).toLocaleString()}, inferred: ${(originCounts.inferred || 0).toLocaleString()}, unspecified: ${(originCounts.unspecified || 0).toLocaleString()}.`);
 console.log(`Source-distinct collection: ${uniqueCount.toLocaleString()} names meet two or more transparent linguistic distinctiveness signals.`);
+console.log(`Editorial distinct selection: ${editorialCount} names selected through the published balancing rubric.`);

@@ -3,7 +3,7 @@ import { Heart, ArrowUpRight } from "lucide-react";
 import { Link } from "wouter";
 import type { NameRecord } from "@/lib/names";
 
-export function NameCard({ record, isFavorite, onToggle }: { record: NameRecord; isFavorite: boolean; onToggle: (slug: string) => void }) {
+export function NameCard({ record, isFavorite, onToggle, showDistinctiveness = false }: { record: NameRecord; isFavorite: boolean; onToggle: (slug: string) => void; showDistinctiveness?: boolean }) {
   return (
     <article className="name-card group relative flex min-h-[185px] flex-col justify-between overflow-hidden border border-emerald-950/10 bg-[#fffdf8] p-5 transition duration-200 hover:-translate-y-0.5 hover:border-[#0b6e4f]/35 hover:shadow-[0_18px_45px_rgba(22,61,47,0.10)]">
       <span className="star-motif absolute right-[-18px] top-[-18px] h-16 w-16 opacity-[0.10]" aria-hidden="true" />
@@ -18,10 +18,7 @@ export function NameCard({ record, isFavorite, onToggle }: { record: NameRecord;
           <Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} />
         </button>
       </div>
-      <div className="relative mt-6 flex items-end justify-between gap-3">
-        <p className="max-w-[16rem] text-sm leading-5 text-emerald-950/65">{record.meaning}</p>
-        <Link href={`/name/${record.slug}`} aria-label={`Read more about ${record.name}`} className="inline-flex h-8 w-8 shrink-0 items-center justify-center bg-emerald-950 text-[#faf7f0] transition group-hover:bg-[#0b6e4f]"><ArrowUpRight className="h-4 w-4" /></Link>
-      </div>
+      <div className="relative mt-6 flex items-end justify-between gap-3"><div><p className="max-w-[16rem] text-sm leading-5 text-emerald-950/65">{record.meaning}</p>{showDistinctiveness && record.distinctivenessNotes[0] && <p className="mt-3 inline-flex border-l-2 border-[#c9a227] pl-2 text-[0.68rem] font-semibold uppercase tracking-[0.11em] text-[#8b6d22]">Why distinctive: {record.distinctivenessNotes[0]}</p>}</div><Link href={`/name/${record.slug}`} aria-label={`Read more about ${record.name}`} className="inline-flex h-8 w-8 shrink-0 items-center justify-center bg-emerald-950 text-[#faf7f0] transition group-hover:bg-[#0b6e4f]"><ArrowUpRight className="h-4 w-4" /></Link></div>
     </article>
   );
 }
