@@ -32,3 +32,10 @@
 - [x] Generate `origin` and `originConfidence` values and rebuild the origin list.
 - [x] Update detail-page presentation and static SEO structured data for inferred origins.
 - [x] Validate at least three origin filter and route combinations and report coverage counts.
+
+## Social Preview Images
+
+- [x] Inspect static name-page generation for current social metadata hooks.
+- [x] Design and sample-test a tailored 1200×630 social card composition.
+- [x] Generate individual social-preview images and Open Graph/Twitter metadata for all names.
+- [x] Validate image and metadata output for representative individual-name pages.
