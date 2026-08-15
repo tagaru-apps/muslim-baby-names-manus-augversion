@@ -121,3 +121,9 @@ The production-rendered boy sample uses the deep-teal geometric treatment and th
 ### Configurable Card Validation Notes
 
 The completed name-detail page presents the Warm, Dark, and Minimal selector directly below the export controls, with readable labels and selected-state treatment. The dedicated social-image cache keys include name, format, phonetic visibility, dedication, and card style, so exact repeated exports reuse their locally stored image blob while changed settings regenerate safely.
+
+## Unique Card Interaction
+
+- [x] Inspect the unique-name card structure and its existing transition treatment.
+- [x] Add a subtle hover motion and editorial accent for unique collection cards.
+- [x] Validate hover feedback and reduced-motion behaviour.
