@@ -1,7 +1,8 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { useEffect } from "react";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
@@ -11,10 +12,23 @@ import FavoritesPage from "./pages/FavoritesPage";
 import InfoPage from "./pages/InfoPage";
 import { SiteShell } from "./components/SiteShell";
 
+/** Quiet Courtyard: moving from an archive slip into a name story always begins at the title and meaning, never at a carried-over scroll offset. */
+function NameRouteScrollReset() {
+  const [location] = useLocation();
+
+  useEffect(() => {
+    if (!location.startsWith("/name/")) return;
+    const frame = window.requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "auto" }));
+    return () => window.cancelAnimationFrame(frame);
+  }, [location]);
+
+  return null;
+}
 
 function Router() {
   return (
     <SiteShell>
+      <NameRouteScrollReset />
       <Switch>
         <Route path={"/"} component={Home} />
         <Route path={"/boy-names"}>{() => <BrowsePage forcedGender="boy" />}</Route>

@@ -150,3 +150,9 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 - [x] Add clear origin counts and routes to the desktop and mobile browse filter sidebar.
 - [x] Apply the validated Quiet Courtyard archival-card and collection-frame refinements.
 - [x] Validate import reporting, provenance display, and origin navigation.
+
+## Name-Page Scroll Restoration
+
+- [x] Inspect client-side route changes from name cards and the current scroll behaviour.
+- [x] Restore the top-of-page position when a name detail route opens.
+- [x] Validate name selection behaviour at desktop and mobile viewports.
