@@ -110,7 +110,8 @@ const editorialRanks = new Map(editorialSelection.map((record, index) => [record
 const names = preliminary.map((record) => {
   const peers = grouped.get(`${record.gender}|${record.letter}`) || [];
   const related = peers.filter((peer) => peer.slug !== record.slug).slice(0, 6).map((peer) => peer.slug);
-  const datasetGender = record.gender === "girl" ? "female" : record.gender === "boy" ? "male" : "unisex";
+  const descriptionMeaning = record.meaning.replace(/[\s.,;:!?]+$/g, "");
+  const editorialQuality = record.meaningTags[0] === "meaning" ? "a thoughtful character" : `a sense of ${record.meaningTags[0]}`;
   return {
     slug: record.slug,
     name: record.name,
@@ -129,7 +130,7 @@ const names = preliminary.map((record) => {
     distinctivenessNotes: record.distinctivenessNotes,
     editorialRank: editorialRanks.get(record.slug) || null,
     isQuranic: record.isQuranic,
-    description: `${record.name} is listed in the CC0 Muslim Names Dataset as a ${datasetGender} name. The source records its meaning as “${record.meaning}”. Its origin label is ${record.originConfidence === "explicit" ? "stated directly in the source text" : record.originConfidence === "inferred" ? "inferred from the published script or etymological signal" : "not specified by the source"}. Its reader-friendly phonetic spelling is generated deterministically from the published transliteration and should be reviewed for names with complex or region-specific pronunciation.`,
+    description: `The meaning of ${record.name}, “${descriptionMeaning},” lends the name ${editorialQuality}. Its ${record.origin} heritage gives it a rooted, expressive feeling for a family choosing a name with depth.`,
     related,
   source: "Muslim Names Dataset (CC0 1.0)",
   };

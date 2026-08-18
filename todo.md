@@ -156,3 +156,10 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 - [x] Inspect client-side route changes from name cards and the current scroll behaviour.
 - [x] Restore the top-of-page position when a name detail route opens.
 - [x] Validate name selection behaviour at desktop and mobile viewports.
+
+## Editorial Name-Page Introductions
+
+- [x] Inspect generated profile descriptions and static SEO copy for dataset-first wording.
+- [x] Replace profile introductions with concise meaning-and-heritage editorial copy.
+- [x] Remove individual name-page source-note copy from interactive and static pages.
+- [x] Regenerate and validate representative name profiles.
