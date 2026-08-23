@@ -169,3 +169,16 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 - [x] Inspect the document shell for existing analytics scripts or placeholders.
 - [x] Add the provided Google Analytics measurement tag once.
 - [x] Validate the tracking script in the compiled site.
+
+## Pinterest Publishing Automation
+
+- [ ] Inspect available Pinterest account connectivity and supported publishing options.
+- [ ] Define the content pillars, cadence, boards, and approval workflow.
+- [ ] Prepare Pinterest-format assets and publication metadata.
+- [ ] Obtain approval before activating any external publishing schedule.
+
+## Pinterest Website Claim
+
+- [x] Inspect the document head for an existing Pinterest verification tag.
+- [x] Add the provided Pinterest domain-verification meta tag once.
+- [x] Validate the published verification tag before claim completion.
