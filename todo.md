@@ -163,3 +163,9 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 - [x] Replace profile introductions with concise meaning-and-heritage editorial copy.
 - [x] Remove individual name-page source-note copy from interactive and static pages.
 - [x] Regenerate and validate representative name profiles.
+
+## Google Analytics
+
+- [x] Inspect the document shell for existing analytics scripts or placeholders.
+- [x] Add the provided Google Analytics measurement tag once.
+- [x] Validate the tracking script in the compiled site.
