@@ -178,7 +178,8 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 - [x] Prepare the first approved Pinterest-format creative batch.
 - [x] Obtain confirmation for the five-item first-batch Pinterest publication.
 - [x] Make the five confirmed creative image URLs publicly fetchable.
-- [x] Add Pinterest-compatible HTML import pages that expose each confirmed creative.
+- [x] Add Pinterest-compatible HTML import pages to the server implementation.
+- [x] Generate Pinterest-compatible HTML import pages in the static public output.
 - [ ] Publish the five confirmed first-batch Pins and record their live links.
 
 ## Publishing Reliability
