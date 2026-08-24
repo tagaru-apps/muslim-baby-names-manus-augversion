@@ -172,10 +172,17 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 
 ## Pinterest Publishing Automation
 
-- [ ] Inspect available Pinterest account connectivity and supported publishing options.
-- [ ] Define the content pillars, cadence, boards, and approval workflow.
-- [ ] Prepare Pinterest-format assets and publication metadata.
-- [ ] Obtain approval before activating any external publishing schedule.
+- [ ] Verify the new Pinterest profile and its website-claim status.
+- [x] Build the 30-day calendar with board assignments, metadata, links, and creative briefs.
+- [x] Prepare a scheduler-ready metadata queue and weekly measurement plan.
+- [x] Prepare the first approved Pinterest-format creative batch.
+- [x] Obtain confirmation for the five-item first-batch Pinterest publication.
+- [x] Make the five confirmed creative URLs publicly fetchable for Pinterest import.
+- [ ] Publish the five confirmed first-batch Pins and record their live links.
+
+## Publishing Reliability
+
+- [ ] Resolve the reported website publishing timeout before the next live release.
 
 ## Pinterest Website Claim
 

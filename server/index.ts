@@ -24,6 +24,14 @@ const brandAssets: Record<string, string> = {
   mark: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/TRWKPHudtUubyAyS.png",
   texture: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/hMGbMscFCaEQBfCD.jpg",
 };
+// Quiet Courtyard Pinterest launch: public same-origin image routes prevent third-party pin importers from blocking the approved campaign creative CDN.
+const pinterestAssets: Record<string, string> = {
+  meaning: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/qrajTHNjqhuYkUtW.png",
+  "girl-names": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/WSOwyXiVjRsvlbAX.png",
+  "boy-names": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/WokcYySbyCOgJqAL.png",
+  "quranic-names": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/hUnxFqJeljHHqfPh.png",
+  "unique-names": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/AFKHsuVQmzOenXLK.png",
+};
 
 const escapeSvg = (value: string) => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 const trim = (value: string, limit: number) => value.length > limit ? `${value.slice(0, limit - 1).trimEnd()}…` : value;
@@ -77,6 +85,18 @@ async function startServer() {
       if (!upstream.ok) return res.status(502).end();
       const body = Buffer.from(await upstream.arrayBuffer());
       res.set({ "Content-Type": upstream.headers.get("content-type") || "application/octet-stream", "Cache-Control": "public, max-age=604800" });
+      return res.send(body);
+    } catch { return res.status(502).end(); }
+  });
+
+  app.get("/pinterest-assets/:asset", async (req, res) => {
+    const source = pinterestAssets[req.params.asset.replace(/\.png$/, "")];
+    if (!source) return res.status(404).end();
+    try {
+      const upstream = await fetch(source);
+      if (!upstream.ok) return res.status(502).end();
+      const body = Buffer.from(await upstream.arrayBuffer());
+      res.set({ "Content-Type": "image/png", "Cache-Control": "public, max-age=604800" });
       return res.send(body);
     } catch { return res.status(502).end(); }
   });
