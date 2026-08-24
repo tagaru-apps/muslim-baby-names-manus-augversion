@@ -24,7 +24,7 @@ const brandAssets: Record<string, string> = {
   mark: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/TRWKPHudtUubyAyS.png",
   texture: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/hMGbMscFCaEQBfCD.jpg",
 };
-// Quiet Courtyard Pinterest launch: public same-origin image routes prevent third-party pin importers from blocking the approved campaign creative CDN.
+// Quiet Courtyard Pinterest launch: cacheable, public same-origin image routes prevent third-party Pin importers from blocking the approved campaign creative CDN.
 const pinterestAssets: Record<string, string> = {
   meaning: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/qrajTHNjqhuYkUtW.png",
   "girl-names": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/WSOwyXiVjRsvlbAX.png",
