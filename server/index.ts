@@ -32,6 +32,13 @@ const pinterestAssets: Record<string, string> = {
   "quranic-names": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/hUnxFqJeljHHqfPh.png",
   "unique-names": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663498193896/AFKHsuVQmzOenXLK.png",
 };
+const pinterestImportMeta: Record<string, { title: string; description: string }> = {
+  meaning: { title: "Muslim Baby Names by Meaning", description: "Explore Muslim baby names through meaning, Arabic spellings, and gentle pronunciation guides." },
+  "girl-names": { title: "Muslim Baby Girl Names With Meaning", description: "Discover Muslim girl names through meaning, heritage, Arabic spelling, and pronunciation guidance." },
+  "boy-names": { title: "Muslim Baby Boy Names With Meaning", description: "Browse Muslim boy names by meaning, first letter, and heritage." },
+  "quranic-names": { title: "Quranic Baby Names With Meaning", description: "Explore names with a Quranic connection alongside Arabic spellings, meanings, and pronunciation guidance." },
+  "unique-names": { title: "Unique Muslim Baby Names With Meaning", description: "Explore distinctive Muslim baby-name choices with depth, heritage, and meaning." },
+};
 
 const escapeSvg = (value: string) => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 const trim = (value: string, limit: number) => value.length > limit ? `${value.slice(0, limit - 1).trimEnd()}…` : value;
@@ -99,6 +106,15 @@ async function startServer() {
       res.set({ "Content-Type": "image/png", "Cache-Control": "public, max-age=604800" });
       return res.send(body);
     } catch { return res.status(502).end(); }
+  });
+
+  app.get("/pinterest/pin/:asset", (req, res) => {
+    const asset = req.params.asset.replace(/\.html$/, "");
+    const meta = pinterestImportMeta[asset];
+    if (!meta || !pinterestAssets[asset]) return res.status(404).end();
+    const image = `https://muslim-babynames.com/pinterest-assets/${asset}.png`;
+    const canonical = `https://muslim-babynames.com/pinterest/pin/${asset}`;
+    return res.type("html").send(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeSvg(meta.title)} | Muslim Baby Names</title><meta name="description" content="${escapeSvg(meta.description)}"><meta name="robots" content="noindex,follow"><link rel="canonical" href="${canonical}"><meta property="og:type" content="website"><meta property="og:title" content="${escapeSvg(meta.title)}"><meta property="og:description" content="${escapeSvg(meta.description)}"><meta property="og:image" content="${image}"><meta property="og:image:width" content="1000"><meta property="og:image:height" content="1500"><meta property="og:url" content="${canonical}"></head><body><main><h1>${escapeSvg(meta.title)}</h1><p>${escapeSvg(meta.description)}</p><img src="${image}" width="1000" height="1500" alt="${escapeSvg(meta.title)} Pinterest creative"></main></body></html>`);
   });
 
   const servePreview = (format: PreviewFormat) => (req: express.Request, res: express.Response) => {
