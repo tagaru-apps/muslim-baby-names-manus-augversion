@@ -182,6 +182,24 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 - [x] Generate Pinterest-compatible HTML import pages in the static public output.
 - [ ] Publish the five confirmed first-batch Pins and record their live links.
 
+## Pinterest API Publishing Dashboard
+
+- [x] Upgrade the project with a protected backend, database, and owner-only access.
+- [x] Create Pinterest connection, board, draft, schedule, publication, and audit data models.
+- [x] Build the owner-only review queue and individual approval controls.
+- [ ] Add the server-side Pinterest OAuth and API integration boundary with secure credential handling.
+- [ ] Add scheduled publication safeguards, idempotency, and publication-status logging.
+- [ ] Validate the protected dashboard and document the Pinterest developer-app setup.
+- [ ] Merge the existing public server routes with the OAuth and tRPC runtime entrypoint.
+- [ ] Validate authenticated owner access, non-owner denial, and review-queue interactions end to end.
+
+## Pinterest Submission Information Pages
+
+- [x] Inspect the public footer, policy routes, and actual website data practices.
+- [x] Add accurate Privacy, Terms, Contact, and Child Safety information pages.
+- [x] Link the policy pages from the public footer and route map.
+- [x] Validate the live policy routes and footer navigation.
+
 ## Publishing Reliability
 
 - [ ] Resolve the reported website publishing timeout before the next live release.

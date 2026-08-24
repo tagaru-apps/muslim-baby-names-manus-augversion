@@ -53,13 +53,14 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       </header>
       {children}
       <footer className="border-t border-emerald-950/10 bg-[#f0ece1]">
-        <div className="mx-auto grid max-w-[1440px] gap-10 px-5 py-12 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr] lg:px-12">
+        <div className="mx-auto grid max-w-[1440px] gap-10 px-5 py-12 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-12">
           <div>
             <div className="mb-4 flex items-center gap-2"><img src={siteAssets.mark} alt="" className="h-7 w-7" /><span className="font-display text-lg font-semibold text-emerald-950">Muslim Baby Names</span></div>
             <p className="max-w-sm text-sm leading-6 text-emerald-950/65">A considered collection of names, meanings, and stories for families beginning something beautiful.</p>
           </div>
           <div><p className="eyebrow mb-3">Explore</p><div className="grid gap-2 text-sm text-emerald-950/75"><Link href="/boy-names">Boy names</Link><Link href="/girl-names">Girl names</Link><Link href="/meaning/light">Names meaning light</Link><Link href="/origin/arabic">Arabic names</Link></div></div>
           <div><p className="eyebrow mb-3">Our promise</p><div className="grid gap-2 text-sm text-emerald-950/75"><Link href="/about">About the collection</Link><Link href="/sources">Sources & methodology</Link><Link href="/favorites">Your private shortlist</Link></div></div>
+          <div><p className="eyebrow mb-3">Information</p><div className="grid gap-2 text-sm text-emerald-950/75"><Link href="/privacy">Privacy policy</Link><Link href="/terms">Terms of use</Link><Link href="/contact">Contact</Link><Link href="/child-safety">Child safety</Link></div></div>
         </div>
         <div className="border-t border-emerald-950/10 px-5 py-4 text-center text-xs text-emerald-950/50">© 2026 Muslim Baby Names. Built for meaningful discovery.</div>
       </footer>

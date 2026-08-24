@@ -1,9 +1,16 @@
+import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { Resvg } from "@resvg/resvg-js";
+import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import { registerOAuthRoutes } from "./_core/oauth";
+import { registerStorageProxy } from "./_core/storageProxy";
+import { appRouter } from "./routers";
+import { createContext } from "./_core/context";
+import { serveStatic, setupVite } from "./_core/vite";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -79,7 +86,11 @@ function previewSvg(record: PreviewRecord, format: PreviewFormat = "landscape") 
 async function startServer() {
   const app = express();
   const server = createServer(app);
-  const staticPath = process.env.NODE_ENV === "production" ? path.resolve(__dirname, "public") : path.resolve(__dirname, "..", "dist", "public");
+  app.use(express.json({ limit: "1mb" }));
+  app.use(express.urlencoded({ limit: "1mb", extended: true }));
+  registerStorageProxy(app);
+  registerOAuthRoutes(app);
+  app.use("/api/trpc", createExpressMiddleware({ router: appRouter, createContext }));
   const previewDataPath = path.resolve(__dirname, "name-preview-records.json");
   const previews: PreviewRecord[] = fs.existsSync(previewDataPath) ? JSON.parse(fs.readFileSync(previewDataPath, "utf8")) : [];
   const previewBySlug = new Map(previews.map((record) => [record.slug, record]));
@@ -128,8 +139,11 @@ async function startServer() {
 
   app.get("/og/name/:slug/instagram.png", servePreview("instagram"));
   app.get("/og/name/:slug.png", servePreview("landscape"));
-  app.use(express.static(staticPath));
-  app.get("*", (_req, res) => res.sendFile(path.join(staticPath, "index.html")));
+  if (process.env.NODE_ENV === "development") {
+    await setupVite(app, server);
+  } else {
+    serveStatic(app);
+  }
 
   const port = process.env.PORT || 3000;
   server.listen(port, () => console.log(`Server running on http://localhost:${port}/`));

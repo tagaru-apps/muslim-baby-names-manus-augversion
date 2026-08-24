@@ -10,6 +10,8 @@ import BrowsePage from "./pages/BrowsePage";
 import NameDetailPage from "./pages/NameDetailPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import InfoPage from "./pages/InfoPage";
+import LegalPage from "./pages/LegalPage";
+import PinterestDashboard from "./pages/PinterestDashboard";
 import { SiteShell } from "./components/SiteShell";
 
 /** Quiet Courtyard: moving from an archive slip into a name story always begins at the title and meaning, never at a carried-over scroll offset. */
@@ -24,12 +26,14 @@ function NameRouteScrollReset() {
 
   return null;
 }
-
 function Router() {
   return (
-    <SiteShell>
-      <NameRouteScrollReset />
-      <Switch>
+    <Switch>
+      <Route path="/admin/pinterest" component={PinterestDashboard} />
+      <Route>
+        <SiteShell>
+          <NameRouteScrollReset />
+          <Switch>
         <Route path={"/"} component={Home} />
         <Route path={"/boy-names"}>{() => <BrowsePage forcedGender="boy" />}</Route>
         <Route path={"/boy-names/:letter"}>{() => <BrowsePage forcedGender="boy" />}</Route>
@@ -44,10 +48,16 @@ function Router() {
         <Route path={"/favorites"} component={FavoritesPage} />
         <Route path={"/about"} component={InfoPage} />
         <Route path={"/sources"} component={InfoPage} />
+        <Route path={"/privacy"} component={LegalPage} />
+        <Route path={"/terms"} component={LegalPage} />
+        <Route path={"/contact"} component={LegalPage} />
+        <Route path={"/child-safety"} component={LegalPage} />
         <Route path={"/404"} component={NotFound} />
-        <Route component={NotFound} />
-      </Switch>
-    </SiteShell>
+            <Route component={NotFound} />
+          </Switch>
+        </SiteShell>
+      </Route>
+    </Switch>
   );
 }
 
