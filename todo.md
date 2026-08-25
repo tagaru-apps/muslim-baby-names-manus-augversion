@@ -210,6 +210,12 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 - [x] Document required Vercel environment settings, build output, and staging verification steps.
 - [x] Validate the public site build and Vercel staging deployment configuration.
 
+## Vercel Deployment Repair
+
+- [x] Inspect the pnpm lockfile, package configuration, and obsolete wouter patch reference.
+- [x] Regenerate consistent package metadata and remove the missing patch configuration.
+- [ ] Validate frozen-lockfile installation and Vercel production build readiness.
+
 ## Pinterest Submission Information Pages
 
 - [x] Inspect the public footer, policy routes, and actual website data practices.
