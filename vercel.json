@@ -1,0 +1,18 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "pnpm build",
+  "outputDirectory": "dist/public",
+  "functions": {
+    "api/index.ts": {
+      "maxDuration": 30,
+      "includeFiles": "dist/name-preview-records.json"
+    }
+  },
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/api/(.*)", "dest": "/api" },
+    { "src": "/og/name/(.*)", "dest": "/api" },
+    { "src": "/brand-assets/(.*)", "dest": "/api" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}

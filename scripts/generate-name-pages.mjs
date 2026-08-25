@@ -59,20 +59,6 @@ for (const record of names) {
   write(path.join(dist, "name", record.slug, "index.html"), html);
 }
 
-const pinterestImportPages = [
-  { asset: "meaning", title: "Muslim Baby Names by Meaning", description: "Explore Muslim baby names through meaning, Arabic spellings, and gentle pronunciation guides." },
-  { asset: "girl-names", title: "Muslim Baby Girl Names With Meaning", description: "Discover Muslim girl names through meaning, heritage, Arabic spelling, and pronunciation guidance." },
-  { asset: "boy-names", title: "Muslim Baby Boy Names With Meaning", description: "Browse Muslim boy names by meaning, first letter, and heritage." },
-  { asset: "quranic-names", title: "Quranic Baby Names With Meaning", description: "Explore names with a Quranic connection alongside Arabic spellings, meanings, and pronunciation guidance." },
-  { asset: "unique-names", title: "Unique Muslim Baby Names With Meaning", description: "Explore distinctive Muslim baby-name choices with depth, heritage, and meaning." },
-];
-for (const page of pinterestImportPages) {
-  const canonical = `${publicDomain}/pinterest/pin/${page.asset}`;
-  const image = `${publicDomain}/pinterest-assets/${page.asset}.png`;
-  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(page.title)} | Muslim Baby Names</title><meta name="description" content="${escape(page.description)}"><meta name="robots" content="index,follow"><link rel="canonical" href="${canonical}"><meta property="og:type" content="website"><meta property="og:title" content="${escape(page.title)}"><meta property="og:description" content="${escape(page.description)}"><meta property="og:image" content="${image}"><meta property="og:image:secure_url" content="${image}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1000"><meta property="og:image:height" content="1500"><meta property="og:url" content="${canonical}"></head><body><main><h1>${escape(page.title)}</h1><p>${escape(page.description)}</p><img src="${image}" width="1000" height="1500" alt="${escape(page.title)} Pinterest creative"></main></body></html>`;
-  write(path.join(dist, "pinterest", "pin", page.asset, "index.html"), html);
-}
-
 const categoryRoutes = ["/", "/boy-names", "/girl-names", "/quranic-names", "/unique-muslim-names", "/search", "/about", "/sources", "/favorites", ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").flatMap((letter) => [`/boy-names/${letter.toLowerCase()}`, `/girl-names/${letter.toLowerCase()}`])];
 const urlset = (entries) => `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.map((entry) => `  <url><loc>${publicDomain}${entry}</loc><lastmod>${date}</lastmod></url>`).join("\n")}\n</urlset>\n`;
 write(path.join(dist, "sitemap-names.xml"), urlset(names.map((record) => route(record.slug))));
