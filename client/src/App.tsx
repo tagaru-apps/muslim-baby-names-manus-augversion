@@ -11,8 +11,8 @@ import NameDetailPage from "./pages/NameDetailPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import InfoPage from "./pages/InfoPage";
 import LegalPage from "./pages/LegalPage";
-import PinterestDashboard from "./pages/PinterestDashboard";
 import { SiteShell } from "./components/SiteShell";
+import { CookieConsentBanner } from "./components/CookieConsentBanner";
 
 /** Quiet Courtyard: moving from an archive slip into a name story always begins at the title and meaning, never at a carried-over scroll offset. */
 function NameRouteScrollReset() {
@@ -29,7 +29,6 @@ function NameRouteScrollReset() {
 function Router() {
   return (
     <Switch>
-      <Route path="/admin/pinterest" component={PinterestDashboard} />
       <Route>
         <SiteShell>
           <NameRouteScrollReset />
@@ -76,6 +75,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
+          <CookieConsentBanner />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

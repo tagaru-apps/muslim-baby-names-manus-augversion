@@ -187,8 +187,8 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 - [x] Upgrade the project with a protected backend, database, and owner-only access.
 - [x] Create Pinterest connection, board, draft, schedule, publication, and audit data models.
 - [x] Build the owner-only review queue and individual approval controls.
-- [ ] Add the server-side Pinterest OAuth and API integration boundary with secure credential handling.
-- [ ] Add scheduled publication safeguards, idempotency, and publication-status logging.
+- [ ] Validate the server-side Pinterest OAuth and API integration boundary with secure credential handling.
+- [ ] Validate scheduled publication safeguards, idempotency, and publication-status logging.
 - [ ] Validate the protected dashboard and document the Pinterest developer-app setup.
 - [ ] Merge the existing public server routes with the OAuth and tRPC runtime entrypoint.
 - [ ] Validate authenticated owner access, non-owner denial, and review-queue interactions end to end.
@@ -209,3 +209,16 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 - [x] Inspect the document head for an existing Pinterest verification tag.
 - [x] Add the provided Pinterest domain-verification meta tag once.
 - [x] Validate the published verification tag before claim completion.
+
+## Cookie Consent and Analytics Privacy
+
+- [x] Inspect the current Google Analytics bootstrap, privacy copy, and public application shell.
+- [x] Gate Google Analytics behind explicit analytics consent.
+- [x] Add an accessible cookie banner with accept, reject, and preference controls.
+- [x] Update the privacy policy to explain consent choices and local preference storage.
+- [x] Validate initial analytics gating and responsive banner presentation.
+- [x] Verify opt-in loads analytics once and persists the preference across a reload.
+- [x] Verify rejection keeps analytics unloaded; the persistent Cookie settings control reopens the choice.
+- [x] Add and run a browser-like component test for reopening and changing saved consent preferences.
+- [x] Remove the dynamically injected Google Analytics script and runtime state when a visitor revokes a previously accepted choice.
+- [x] Validate saved-granted → Cookie settings → reject in both unit and browser-like component tests.
