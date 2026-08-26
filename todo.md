@@ -225,7 +225,7 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 
 ## Publishing Reliability
 
-- [ ] Publish the streamlined public-site checkpoint and verify the existing managed deployment remains healthy.
+- [ ] Trigger and verify propagation of the consent-gated release on the managed deployment; the current published HTML is still serving the earlier unconditional analytics tag.
 
 ## Pinterest Website Claim
 
