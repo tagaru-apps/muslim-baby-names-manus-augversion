@@ -225,7 +225,7 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 
 ## Publishing Reliability
 
-- [ ] Trigger and verify propagation of the consent-gated release on the managed deployment; the current published HTML is still serving the earlier unconditional analytics tag.
+- [x] Trigger and verify propagation of the consent-gated release on the managed deployment; the published HTML now omits the unconditional analytics tag and key routes are healthy.
 
 ## Pinterest Website Claim
 
