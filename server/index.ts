@@ -1,5 +1,4 @@
 import express from "express";
-import { createServer } from "http";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -63,8 +62,8 @@ function previewSvg(record: PreviewRecord, format: PreviewFormat = "landscape") 
 
 export function createPublicApp() {
   const app = express();
-  const previewCandidates = [path.resolve(__dirname, "name-preview-records.json"), path.resolve(process.cwd(), "dist", "name-preview-records.json"), path.resolve(process.cwd(), "name-preview-records.json")];
-  const previewDataPath = previewCandidates.find((candidate) => fs.existsSync(candidate));
+  const staticPath = process.env.NODE_ENV === "production" ? path.resolve(__dirname, "public") : path.resolve(__dirname, "..", "dist", "public");
+  const previewDataPath = [path.resolve(__dirname, "name-preview-records.json"), path.resolve(process.cwd(), "dist", "name-preview-records.json")].find(fs.existsSync);
   const previews: PreviewRecord[] = previewDataPath ? JSON.parse(fs.readFileSync(previewDataPath, "utf8")) : [];
   const previewBySlug = new Map(previews.map((record) => [record.slug, record]));
 
@@ -91,17 +90,16 @@ export function createPublicApp() {
 
   app.get("/og/name/:slug/instagram.png", servePreview("instagram"));
   app.get("/og/name/:slug.png", servePreview("landscape"));
-  const staticPath = process.env.NODE_ENV === "production" ? path.resolve(__dirname, "public") : path.resolve(process.cwd(), "dist", "public");
   app.use(express.static(staticPath));
   app.get("*", (_req, res) => res.sendFile(path.join(staticPath, "index.html")));
+
   return app;
 }
 
 function startServer() {
   const app = createPublicApp();
-  const server = createServer(app);
   const port = process.env.PORT || 3000;
-  server.listen(port, () => console.log(`Server running on http://localhost:${port}/`));
+  app.listen(port, () => console.log(`Server running on http://localhost:${port}/`));
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === __filename) startServer();

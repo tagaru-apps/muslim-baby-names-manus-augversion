@@ -7,7 +7,7 @@
 - [x] Extend route handling and SEO metadata for each individual name.
 - [x] Generate SEO sitemap assets for all catalogue pages and individual-name URLs.
 - [x] Validate sample routes, build output, mobile presentation, and data counts.
-- [ ] Save a final project checkpoint and deliver the expanded catalogue.
+- [x] Save a final project checkpoint and deliver the expanded catalogue.
 
 ## Pronunciation Feature
 
@@ -130,8 +130,8 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 
 ## CSV Name Import Utility
 
-- [ ] Inspect the expected muslim_names_source.json field schema.
-- [ ] Create a configurable Python CSV-to-JSON converter with row validation and duplicate handling.
+- [x] Inspect the expected muslim_names_source.json field schema.
+- [x] Create a configurable Python CSV-to-JSON converter with row validation and duplicate handling.
 - [x] Inspect the expected muslim_names_source.json field schema.
 - [x] Create a configurable Python CSV-to-JSON converter with row validation and duplicate handling.
 - [x] Test it on a representative sample and document the command and supported columns.
@@ -172,7 +172,7 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 
 ## Pinterest Publishing Automation
 
-- [ ] Verify the new Pinterest profile and its website-claim status.
+- [x] Retain the public Pinterest profile link while removing all publishing automation.
 - [x] Build the 30-day calendar with board assignments, metadata, links, and creative briefs.
 - [x] Prepare a scheduler-ready metadata queue and weekly measurement plan.
 - [x] Prepare the first approved Pinterest-format creative batch.
@@ -180,18 +180,41 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 - [x] Make the five confirmed creative image URLs publicly fetchable.
 - [x] Add Pinterest-compatible HTML import pages to the server implementation.
 - [x] Generate Pinterest-compatible HTML import pages in the static public output.
-- [ ] Publish the five confirmed first-batch Pins and record their live links.
+- [x] Remove the unpublished first-batch publication workflow and its temporary creative-import routes.
 
 ## Pinterest API Publishing Dashboard
 
 - [x] Upgrade the project with a protected backend, database, and owner-only access.
 - [x] Create Pinterest connection, board, draft, schedule, publication, and audit data models.
 - [x] Build the owner-only review queue and individual approval controls.
-- [ ] Validate the server-side Pinterest OAuth and API integration boundary with secure credential handling.
-- [ ] Validate scheduled publication safeguards, idempotency, and publication-status logging.
-- [ ] Validate the protected dashboard and document the Pinterest developer-app setup.
-- [ ] Merge the existing public server routes with the OAuth and tRPC runtime entrypoint.
-- [ ] Validate authenticated owner access, non-owner denial, and review-queue interactions end to end.
+- [x] Remove the Pinterest OAuth, scheduling, protected dashboard, and publishing boundary.
+
+## Hosting Assessment
+
+- [x] Document current server, database, OAuth, static generation, and scheduled publishing requirements.
+- [x] Compare managed hosting and Vercel for the project’s current architecture.
+- [x] Prepare a non-destructive Vercel migration checklist if the user elects to move.
+
+## Remove Pinterest Automation and Restore Public Site
+
+- [x] Audit all Pinterest automation, OAuth, scheduling, database, and dashboard code paths.
+- [x] Remove the protected Pinterest dashboard and all API automation routes.
+- [x] Validate the restored public Express/Vite runtime and static public-site build scripts.
+- [x] Remove unneeded Pinterest automation dependencies, tests, schemas, and database integration code.
+- [x] Validate the public homepage, browse routes, name profiles, social sharing, policies, and production build.
+
+## Vercel Staging Readiness
+
+- [x] Permanently remove the confirmed empty Pinterest automation database tables.
+- [x] Add a Vercel serverless entrypoint and deployment configuration without changing the live domain.
+- [x] Document required Vercel environment settings, build output, and staging verification steps.
+- [x] Validate the public site build and Vercel staging deployment configuration.
+
+## Vercel Deployment Repair
+
+- [x] Inspect the pnpm lockfile, package configuration, and obsolete wouter patch reference.
+- [x] Regenerate consistent package metadata and remove the missing patch configuration.
+- [x] Validate frozen-lockfile installation and Vercel production build readiness.
 
 ## Pinterest Submission Information Pages
 
@@ -202,7 +225,7 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 
 ## Publishing Reliability
 
-- [ ] Resolve the reported website publishing timeout before the next live release.
+- [ ] Publish the streamlined public-site checkpoint and verify the existing managed deployment remains healthy.
 
 ## Pinterest Website Claim
 
