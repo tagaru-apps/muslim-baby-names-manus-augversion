@@ -245,3 +245,9 @@ The completed name-detail page presents the Warm, Dark, and Minimal selector dir
 - [x] Add and run a browser-like component test for reopening and changing saved consent preferences.
 - [x] Remove the dynamically injected Google Analytics script and runtime state when a visitor revokes a previously accepted choice.
 - [x] Validate saved-granted → Cookie settings → reject in both unit and browser-like component tests.
+
+## Google Analytics Configuration Update
+
+- [x] Integrate measurement ID G-P742T9QYY1 using the supplied gtag configuration inside the existing explicit opt-in loader.
+- [x] Validate that the supplied config remains absent before consent and loads only after acceptance, then publish the update.
+

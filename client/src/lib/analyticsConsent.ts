@@ -22,9 +22,8 @@ export function loadAnalyticsAfterConsent() {
   if (typeof window === "undefined" || document.getElementById("mbn-google-analytics")) return;
   window.dataLayer = window.dataLayer || [];
   window.gtag = (...args: unknown[]) => window.dataLayer?.push(args);
-  window.gtag("consent", "default", { analytics_storage: "granted" });
   window.gtag("js", new Date());
-  window.gtag("config", measurementId, { anonymize_ip: true });
+  window.gtag("config", measurementId);
 
   const script = document.createElement("script");
   script.id = "mbn-google-analytics";

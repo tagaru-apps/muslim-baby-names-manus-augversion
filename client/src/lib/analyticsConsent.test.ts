@@ -40,6 +40,9 @@ describe("analytics consent", () => {
     expect(storage.get(ANALYTICS_CONSENT_KEY)).toBe("granted");
     expect(scripts).toHaveLength(1);
     expect(scripts[0]).toMatchObject({ id: "mbn-google-analytics", src: "https://www.googletagmanager.com/gtag/js?id=G-P742T9QYY1", async: true });
+    expect(window.dataLayer?.[0]).toEqual(["js", expect.any(Date)]);
+    expect(window.dataLayer?.[1]).toEqual(["config", "G-P742T9QYY1"]);
+    expect(window.dataLayer).not.toContainEqual(["consent", "default", expect.anything()]);
 
     loadAnalyticsAfterConsent();
     expect(scripts).toHaveLength(1);
